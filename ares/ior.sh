@@ -161,8 +161,8 @@ ior_write_hermes_posix_fpp() {
   IO_SIZE_PER_RANK=$2
   TRANSFER_SIZE=$3
   CONF_SUFFIX=$4
-  export HERMES_CLIENT_CONF=${HERMES_SCRIPTS_ROOT}/local/conf/hermes_client.yaml
-  export HERMES_CONF=${HERMES_SCRIPTS_ROOT}/local/conf/hermes_server${CONF_SUFFIX}.yaml
+  export HERMES_CLIENT_CONF=${HERMES_SCRIPTS_ROOT}/ares/conf/hermes_client.yaml
+  export HERMES_CONF=${HERMES_SCRIPTS_ROOT}/ares/conf/hermes_server${CONF_SUFFIX}.yaml
 
   # Start daemon
   echo "STARTING DAEMON"
@@ -189,8 +189,8 @@ ior_read_hermes_posix_fpp() {
   IO_SIZE_PER_RANK=$2
   TRANSFER_SIZE=$3
   CONF_SUFFIX=$4
-  export HERMES_CLIENT_CONF=${HERMES_SCRIPTS_ROOT}/local/conf/hermes_client.yaml
-  export HERMES_CONF=${HERMES_SCRIPTS_ROOT}/local/conf/hermes_server${CONF_SUFFIX}.yaml
+  export HERMES_CLIENT_CONF=${HERMES_SCRIPTS_ROOT}/ares/conf/hermes_client.yaml
+  export HERMES_CONF=${HERMES_SCRIPTS_ROOT}/ares/conf/hermes_server${CONF_SUFFIX}.yaml
 
   # Start daemon
   echo "STARTING DAEMON"
@@ -220,8 +220,8 @@ ior_write_read_hermes_posix_fpp() {
   IO_SIZE_PER_RANK=$2
   TRANSFER_SIZE=$3
   CONF_SUFFIX=$4
-  export HERMES_CLIENT_CONF=${HERMES_SCRIPTS_ROOT}/local/conf/hermes_client.yaml
-  export HERMES_CONF=${HERMES_SCRIPTS_ROOT}/local/conf/hermes_server${CONF_SUFFIX}.yaml
+  export HERMES_CLIENT_CONF=${HERMES_SCRIPTS_ROOT}/ares/conf/hermes_client.yaml
+  export HERMES_CONF=${HERMES_SCRIPTS_ROOT}/ares/conf/hermes_server${CONF_SUFFIX}.yaml
 
   # Start daemon
   echo "STARTING DAEMON"
