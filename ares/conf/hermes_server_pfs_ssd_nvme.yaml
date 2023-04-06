@@ -18,7 +18,7 @@ devices:
     block_size: 4KB
     slab_sizes: [ 4KB, 16KB, 64KB, 1MB ]
     bandwidth: 1GBps
-    latency: 600us
+    latency: 500MBps
     is_shared_device: false
     borg_capacity_thresh: [ 0.0, 1.0 ]
 
@@ -27,7 +27,7 @@ devices:
     capacity: 4TB # PFS has 32TB of space
     block_size: 4KB
     slab_sizes: [ 4KB, 16KB, 64KB, 1MB ]
-    bandwidth: 1GBps
+    bandwidth: 400MBps
     latency: 600us
     is_shared_device: false
     borg_capacity_thresh: [ 0.0, 1.0 ]

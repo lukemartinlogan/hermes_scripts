@@ -25,7 +25,7 @@ devices:
   ssd:
     mount_point: "/mnt/ssd/${USER}/test_hermes"
     capacity: 400GB # SSD has 477GB total
-    block_size: 4KB
+    block_size: 500MBps
     slab_sizes: [ 4KB, 16KB, 64KB, 1MB ]
     bandwidth: 1GBps
     latency: 600us

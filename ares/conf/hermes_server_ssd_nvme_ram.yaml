@@ -27,7 +27,7 @@ devices:
     capacity: 400GB # SSD has 477GB total
     block_size: 4KB
     slab_sizes: [ 4KB, 16KB, 64KB, 1MB ]
-    bandwidth: 1GBps
+    bandwidth: 500MBps
     latency: 600us
     is_shared_device: false
     borg_capacity_thresh: [ 0.0, 1.0 ]
