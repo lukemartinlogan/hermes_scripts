@@ -4,11 +4,9 @@ spack load ior
 
 # Load the paths
 HERMES_SCRIPTS_ROOT=`pwd`
-HERMES_BUILD_TYPE=$1
-. ${HERMES_SCRIPTS_ROOT}/local/hermes_${HERMES_BUILD_TYPE}_paths.sh
+. ${HERMES_SCRIPTS_ROOT}/ares/hermes_paths.sh
 echo "${CMAKE_SOURCE_DIR}"
-
-mkdir /tmp/test_hermes
+IOR_OUTPUT=${HOME}/test_hermes/hi.txt
 
 ####### IOR COMMANDS (no Hermes) #######
 
@@ -20,11 +18,11 @@ ior_write_posix_fpp_cmd() {
 
   # Run IOR
   echo "STARTING IOR"
-  echo "ior -w -o /tmp/test_hermes/hi.txt -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F"
+  echo "ior -w -o ${IOR_OUTPUT} -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F"
   mpirun -n "${NPROCS}" \
   -genv PATH="${PATH}" \
   -genv LD_LIBRARY_PATH="${LD_LIBRARY_PATH}" \
-  ior -w -o /tmp/test_hermes/hi.txt -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F -k
+  ior -w -o ${IOR_OUTPUT} -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F -k
   echo "FINISHED IOR"
 }
 
@@ -36,11 +34,11 @@ ior_read_posix_fpp_cmd() {
 
   # Run IOR
   echo "STARTING IOR"
-  echo "ior -w -o /tmp/test_hermes/hi.txt -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F"
+  echo "ior -w -o ${IOR_OUTPUT} -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F"
   mpirun -n "${NPROCS}" \
   -genv PATH="${PATH}" \
   -genv LD_LIBRARY_PATH="${LD_LIBRARY_PATH}" \
-  ior -r -o /tmp/test_hermes/hi.txt -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F
+  ior -r -o ${IOR_OUTPUT} -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F
   echo "FINISHED IOR"
 }
 
@@ -52,11 +50,11 @@ ior_write_read_posix_fpp_cmd() {
 
   # Run IOR
   echo "STARTING IOR"
-  echo "ior -w -o /tmp/test_hermes/hi.txt -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F"
+  echo "ior -w -o ${IOR_OUTPUT} -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F"
   mpirun -n "${NPROCS}" \
   -genv PATH="${PATH}" \
   -genv LD_LIBRARY_PATH="${LD_LIBRARY_PATH}" \
-  ior -r -w -o /tmp/test_hermes/hi.txt -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F
+  ior -r -w -o ${IOR_OUTPUT} -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F
   echo "FINISHED IOR"
 }
 
@@ -69,7 +67,7 @@ ior_write_hermes_posix_fpp_cmd() {
   TRANSFER_SIZE=$3
 
   echo "STARTING IOR"
-  echo "ior -w -o /tmp/test_hermes/hi.txt -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F"
+  echo "ior -w -o ${IOR_OUTPUT} -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F"
   mpirun -n "${NPROCS}" \
   -genv PATH="${PATH}" \
   -genv LD_LIBRARY_PATH="${LD_LIBRARY_PATH}" \
@@ -77,14 +75,14 @@ ior_write_hermes_posix_fpp_cmd() {
   -genv HERMES_CLIENT_CONF="${HERMES_CLIENT_CONF}" \
   -genv HERMES_CONF="${HERMES_CONF}" \
   -genv HERMES_ADAPTER_MODE=kScratch \
-  ior -w -o /tmp/test_hermes/hi.txt -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F
+  ior -w -o ${IOR_OUTPUT} -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F
   echo "FINISHED IOR"
 }
 
 # The IOR command for a read-only workload (with hermes)
 ior_read_hermes_posix_fpp_cmd() {
   echo "STARTING IOR"
-  echo "ior -w -o /tmp/test_hermes/hi.txt -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F"
+  echo "ior -w -o ${IOR_OUTPUT} -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F"
   mpirun -n "${NPROCS}" \
   -genv PATH="${PATH}" \
   -genv LD_LIBRARY_PATH="${LD_LIBRARY_PATH}" \
@@ -92,14 +90,14 @@ ior_read_hermes_posix_fpp_cmd() {
   -genv HERMES_CLIENT_CONF="${HERMES_CLIENT_CONF}" \
   -genv HERMES_CONF="${HERMES_CONF}" \
   -genv HERMES_ADAPTER_MODE=kScratch \
-  ior -r -o /tmp/test_hermes/hi.txt -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F
+  ior -r -o ${IOR_OUTPUT} -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F
   echo "FINISHED IOR"
 }
 
 # The IOR command for a write-then-read workflow (with hermes)
 ior_write_read_hermes_posix_fpp_cmd() {
   echo "STARTING IOR"
-  echo "ior -w -o /tmp/test_hermes/hi.txt -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F"
+  echo "ior -w -o ${IOR_OUTPUT} -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F"
   mpirun -n "${NPROCS}" \
   -genv PATH="${PATH}" \
   -genv LD_LIBRARY_PATH="${LD_LIBRARY_PATH}" \
@@ -107,7 +105,7 @@ ior_write_read_hermes_posix_fpp_cmd() {
   -genv HERMES_CLIENT_CONF="${HERMES_CLIENT_CONF}" \
   -genv HERMES_CONF="${HERMES_CONF}" \
   -genv HERMES_ADAPTER_MODE=kScratch \
-  ior -r -w -o /tmp/test_hermes/hi.txt -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F
+  ior -r -w -o ${IOR_OUTPUT} -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F
   echo "FINISHED IOR"
 }
 

@@ -1,10 +1,7 @@
 #!/bin/bash
 spack load --only dependencies hermes
 
-HERMES_SCRIPTS_ROOT=`pwd`
-CMAKE_SOURCE_DIR=${MY_PROJECTS}/hermes
-cd ${CMAKE_SOURCE_DIR}/*gcc
-CMAKE_BINARY_DIR=`pwd`
+. hermes_paths.sh
 
 mkdir /tmp/test_hermes
 
