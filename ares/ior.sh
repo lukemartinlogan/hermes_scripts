@@ -121,8 +121,7 @@ ior_write_posix_fpp() {
   ior_write_posix_fpp_cmd "$NPROCS" "$IO_SIZE_PER_RANK" "${TRANSFER_SIZE}"
 
   # Cleanup
-  rm -rf /tmp/test_hermes/*
-  rm -rf ${HOME}/test/*
+  cleanup_hermes
 }
 
 # A read-only workload to new files with POSIX
@@ -135,8 +134,7 @@ ior_read_posix_fpp() {
   ior_read_posix_fpp_cmd "$NPROCS" "$IO_SIZE_PER_RANK" "${TRANSFER_SIZE}"
 
   # Cleanup
-  rm -rf /tmp/test_hermes/*
-  rm -rf ${HOME}/test/*
+  cleanup_hermes
 }
 
 # A write-read workflow to new files with POSIX
@@ -149,8 +147,7 @@ ior_write_read_posix_fpp() {
   ior_write_read_posix_fpp_cmd "$NPROCS" "$IO_SIZE_PER_RANK" "${TRANSFER_SIZE}"
 
   # Cleanup
-  rm -rf /tmp/test_hermes/*
-  rm -rf ${HOME}/test/*
+  cleanup_hermes
 }
 
 ####### IOR TESTS (Hermes) #######
@@ -179,8 +176,7 @@ ior_write_hermes_posix_fpp() {
   ${CMAKE_BINARY_DIR}/bin/finalize_hermes
 
   # Cleanup
-  rm -rf /tmp/test_hermes/*
-  rm -rf ${HOME}/test/*
+  cleanup_hermes
 }
 
 # A read-only workload to new files with POSIX
@@ -210,8 +206,7 @@ ior_read_hermes_posix_fpp() {
   ${CMAKE_BINARY_DIR}/bin/finalize_hermes
 
   # Cleanup
-  rm -rf /tmp/test_hermes/*
-  rm -rf ${HOME}/test/*
+  cleanup_hermes
 }
 
 # A read-only workload to new files with POSIX
@@ -238,7 +233,6 @@ ior_write_read_hermes_posix_fpp() {
   ${CMAKE_BINARY_DIR}/bin/finalize_hermes
 
   # Cleanup
-  rm -rf /tmp/test_hermes/*
-  rm -rf ${HOME}/test/*
+  cleanup_hermes
 }
 

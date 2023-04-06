@@ -2,7 +2,7 @@
 
 HERMES_SCRIPTS_ROOT=`pwd`
 # . ${HERMES_SCRIPTS_ROOT}/ares/ior.sh "${HOME}/test_hermes/hi.txt"
-. ${HERMES_SCRIPTS_ROOT}/ares/ior.sh "/mnt/ssd/llogan/hi.txt"
+. ${HERMES_SCRIPTS_ROOT}/ares/ior.sh "/mnt/ssd/${USER}/ior_out/hi.txt"
 
 # HERMES
 echo "HERMES TESTS BEGIN"
