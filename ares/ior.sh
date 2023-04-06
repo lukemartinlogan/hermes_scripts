@@ -6,7 +6,7 @@ spack load ior
 HERMES_SCRIPTS_ROOT=`pwd`
 . ${HERMES_SCRIPTS_ROOT}/ares/hermes_paths.sh
 echo "${CMAKE_SOURCE_DIR}"
-IOR_OUTPUT=${HOME}/test_hermes/hi.txt
+IOR_OUTPUT=$1
 
 ####### IOR COMMANDS (no Hermes) #######
 
