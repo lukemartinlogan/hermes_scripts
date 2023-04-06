@@ -1,7 +1,8 @@
 #!/bin/bash
 spack load --only dependencies hermes
 
-. hermes_paths.sh
+HERMES_SCRIPTS_ROOT=`pwd`
+. ${HERMES_SCRIPTS_ROOT}/ares/hermes_paths.sh
 
 mkdir /tmp/test_hermes
 
