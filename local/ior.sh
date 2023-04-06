@@ -10,8 +10,10 @@ echo "${CMAKE_SOURCE_DIR}"
 
 mkdir /tmp/test_hermes
 
-# A write-only workload to new files with POSIX
-ior_write_posix_fpp() {
+####### IOR COMMANDS (no Hermes) #######
+
+# The IOR command for a write-only workload (no hermes)
+ior_write_posix_fpp_cmd() {
   NPROCS=$1
   IO_SIZE_PER_RANK=$2
   TRANSFER_SIZE=$3
@@ -22,14 +24,138 @@ ior_write_posix_fpp() {
   mpirun -n "${NPROCS}" \
   -genv PATH="${PATH}" \
   -genv LD_LIBRARY_PATH="${LD_LIBRARY_PATH}" \
-  ior -w -o /tmp/test_hermes/hi.txt -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F
-
+  ior -w -o /tmp/test_hermes/hi.txt -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F -k
   echo "FINISHED IOR"
+}
+
+# The IOR command for a read-only workload (no hermes)
+ior_read_posix_fpp_cmd() {
+  NPROCS=$1
+  IO_SIZE_PER_RANK=$2
+  TRANSFER_SIZE=$3
+
+  # Run IOR
+  echo "STARTING IOR"
+  echo "ior -w -o /tmp/test_hermes/hi.txt -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F"
+  mpirun -n "${NPROCS}" \
+  -genv PATH="${PATH}" \
+  -genv LD_LIBRARY_PATH="${LD_LIBRARY_PATH}" \
+  ior -r -o /tmp/test_hermes/hi.txt -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F
+  echo "FINISHED IOR"
+}
+
+# The IOR command for a write-then-read workflow (no hermes)
+ior_write_read_posix_fpp_cmd() {
+  NPROCS=$1
+  IO_SIZE_PER_RANK=$2
+  TRANSFER_SIZE=$3
+
+  # Run IOR
+  echo "STARTING IOR"
+  echo "ior -w -o /tmp/test_hermes/hi.txt -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F"
+  mpirun -n "${NPROCS}" \
+  -genv PATH="${PATH}" \
+  -genv LD_LIBRARY_PATH="${LD_LIBRARY_PATH}" \
+  ior -r -w -o /tmp/test_hermes/hi.txt -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F
+  echo "FINISHED IOR"
+}
+
+####### IOR COMMANDS (Hermes) #######
+
+# The IOR command for a write-only workload (with hermes)
+ior_write_hermes_posix_fpp_cmd() {
+  NPROCS=$1
+  IO_SIZE_PER_RANK=$2
+  TRANSFER_SIZE=$3
+
+  echo "STARTING IOR"
+  echo "ior -w -o /tmp/test_hermes/hi.txt -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F"
+  mpirun -n "${NPROCS}" \
+  -genv PATH="${PATH}" \
+  -genv LD_LIBRARY_PATH="${LD_LIBRARY_PATH}" \
+  -genv LD_PRELOAD="${CMAKE_BINARY_DIR}/bin/libhermes_posix.so" \
+  -genv HERMES_CLIENT_CONF="${HERMES_CLIENT_CONF}" \
+  -genv HERMES_CONF="${HERMES_CONF}" \
+  -genv HERMES_ADAPTER_MODE=kScratch \
+  ior -w -o /tmp/test_hermes/hi.txt -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F
+  echo "FINISHED IOR"
+}
+
+# The IOR command for a read-only workload (with hermes)
+ior_read_hermes_posix_fpp_cmd() {
+  echo "STARTING IOR"
+  echo "ior -w -o /tmp/test_hermes/hi.txt -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F"
+  mpirun -n "${NPROCS}" \
+  -genv PATH="${PATH}" \
+  -genv LD_LIBRARY_PATH="${LD_LIBRARY_PATH}" \
+  -genv LD_PRELOAD="${CMAKE_BINARY_DIR}/bin/libhermes_posix.so" \
+  -genv HERMES_CLIENT_CONF="${HERMES_CLIENT_CONF}" \
+  -genv HERMES_CONF="${HERMES_CONF}" \
+  -genv HERMES_ADAPTER_MODE=kScratch \
+  ior -r -o /tmp/test_hermes/hi.txt -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F
+  echo "FINISHED IOR"
+}
+
+# The IOR command for a write-then-read workflow (with hermes)
+ior_write_read_hermes_posix_fpp_cmd() {
+  echo "STARTING IOR"
+  echo "ior -w -o /tmp/test_hermes/hi.txt -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F"
+  mpirun -n "${NPROCS}" \
+  -genv PATH="${PATH}" \
+  -genv LD_LIBRARY_PATH="${LD_LIBRARY_PATH}" \
+  -genv LD_PRELOAD="${CMAKE_BINARY_DIR}/bin/libhermes_posix.so" \
+  -genv HERMES_CLIENT_CONF="${HERMES_CLIENT_CONF}" \
+  -genv HERMES_CONF="${HERMES_CONF}" \
+  -genv HERMES_ADAPTER_MODE=kScratch \
+  ior -r -w -o /tmp/test_hermes/hi.txt -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F
+  echo "FINISHED IOR"
+}
+
+####### IOR TESTS (no Hermes) #######
+
+# A write-only workload to new files with POSIX
+ior_write_posix_fpp() {
+  NPROCS=$1
+  IO_SIZE_PER_RANK=$2
+  TRANSFER_SIZE=$3
+
+  # Run IOR
+  ior_write_posix_fpp_cmd "$NPROCS" "$IO_SIZE_PER_RANK" "${TRANSFER_SIZE}"
 
   # Cleanup
   rm -rf /tmp/test_hermes/*
   rm -rf ${HOME}/test/*
 }
+
+# A read-only workload to new files with POSIX
+ior_read_posix_fpp() {
+  NPROCS=$1
+  IO_SIZE_PER_RANK=$2
+  TRANSFER_SIZE=$3
+
+  # Run IOR
+  ior_read_posix_fpp_cmd "$NPROCS" "$IO_SIZE_PER_RANK" "${TRANSFER_SIZE}"
+
+  # Cleanup
+  rm -rf /tmp/test_hermes/*
+  rm -rf ${HOME}/test/*
+}
+
+# A write-read workflow to new files with POSIX
+ior_write_read_posix_fpp() {
+  NPROCS=$1
+  IO_SIZE_PER_RANK=$2
+  TRANSFER_SIZE=$3
+
+  # Run IOR
+  ior_write_read_posix_fpp_cmd "$NPROCS" "$IO_SIZE_PER_RANK" "${TRANSFER_SIZE}"
+
+  # Cleanup
+  rm -rf /tmp/test_hermes/*
+  rm -rf ${HOME}/test/*
+}
+
+####### IOR TESTS (Hermes) #######
 
 # A write-only workload to new files with POSIX
 ior_write_hermes_posix_fpp() {
@@ -47,16 +173,7 @@ ior_write_hermes_posix_fpp() {
   echo "DAEMON STARTED"
 
   # Run IOR
-  echo "STARTING IOR"
-  echo "ior -w -o /tmp/test_hermes/hi.txt -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F"
-  mpirun -n "${NPROCS}" \
-  -genv PATH="${PATH}" \
-  -genv LD_LIBRARY_PATH="${LD_LIBRARY_PATH}" \
-  -genv LD_PRELOAD="${CMAKE_BINARY_DIR}/bin/libhermes_posix.so" \
-  -genv HERMES_CLIENT_CONF="${HERMES_CLIENT_CONF}" \
-  -genv HERMES_CONF="${HERMES_CONF}" \
-  -genv HERMES_ADAPTER_MODE=kScratch \
-  ior -w -o /tmp/test_hermes/hi.txt -t "${TRANSFER_SIZE}" -b "${IO_SIZE_PER_RANK}" -F
+  ior_write_hermes_posix_fpp_cmd "${NPROCS}" "${IO_SIZE_PER_RANK}" "${TRANSFER_SIZE}"
 
   echo "FINISHED IOR"
 
@@ -67,3 +184,63 @@ ior_write_hermes_posix_fpp() {
   rm -rf /tmp/test_hermes/*
   rm -rf ${HOME}/test/*
 }
+
+# A read-only workload to new files with POSIX
+ior_read_hermes_posix_fpp() {
+  NPROCS=$1
+  IO_SIZE_PER_RANK=$2
+  TRANSFER_SIZE=$3
+  CONF_SUFFIX=$4
+  export HERMES_CLIENT_CONF=${HERMES_SCRIPTS_ROOT}/local/conf/hermes_client.yaml
+  export HERMES_CONF=${HERMES_SCRIPTS_ROOT}/local/conf/hermes_server${CONF_SUFFIX}.yaml
+
+  # Start daemon
+  echo "STARTING DAEMON"
+  ${CMAKE_BINARY_DIR}/bin/hermes_daemon &
+  sleep 3
+  echo "DAEMON STARTED"
+
+  # Run IOR (write, no hermes)
+  # ior_write_posix_fpp_cmd "${NPROCS}" "${IO_SIZE_PER_RANK}" "${TRANSFER_SIZE}"
+
+  # Run IOR (read, with hermes)
+  ior_read_hermes_posix_fpp_cmd "${NPROCS}" "${IO_SIZE_PER_RANK}" "${TRANSFER_SIZE}"
+
+  echo "FINISHED IOR"
+
+  # Finalize Hermes
+  ${CMAKE_BINARY_DIR}/bin/finalize_hermes
+
+  # Cleanup
+  rm -rf /tmp/test_hermes/*
+  rm -rf ${HOME}/test/*
+}
+
+# A read-only workload to new files with POSIX
+ior_write_read_hermes_posix_fpp() {
+  NPROCS=$1
+  IO_SIZE_PER_RANK=$2
+  TRANSFER_SIZE=$3
+  CONF_SUFFIX=$4
+  export HERMES_CLIENT_CONF=${HERMES_SCRIPTS_ROOT}/local/conf/hermes_client.yaml
+  export HERMES_CONF=${HERMES_SCRIPTS_ROOT}/local/conf/hermes_server${CONF_SUFFIX}.yaml
+
+  # Start daemon
+  echo "STARTING DAEMON"
+  ${CMAKE_BINARY_DIR}/bin/hermes_daemon &
+  sleep 3
+  echo "DAEMON STARTED"
+
+  # Run IOR (write, no hermes)
+  ior_write_read_hermes_posix_fpp_cmd "${NPROCS}" "${IO_SIZE_PER_RANK}" "${TRANSFER_SIZE}"
+
+  echo "FINISHED IOR"
+
+  # Finalize Hermes
+  ${CMAKE_BINARY_DIR}/bin/finalize_hermes
+
+  # Cleanup
+  rm -rf /tmp/test_hermes/*
+  rm -rf ${HOME}/test/*
+}
+
