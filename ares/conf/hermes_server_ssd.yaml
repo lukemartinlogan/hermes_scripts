@@ -2,26 +2,6 @@
 
 ### Define properties of the storage devices
 devices:
-  ram:
-    mount_point: ""
-    capacity: 32GB  # Ares has 48GB total
-    block_size: 4KB
-    slab_sizes: [ 4KB, 16KB, 64KB, 1MB ]
-    bandwidth: 6000MBps
-    latency: 15us
-    is_shared_device: false
-    borg_capacity_thresh: [0.0, 1.0]
-
-  nvme:
-    mount_point: "/mnt/nvme/${USER}/test_hermes"
-    capacity: 150GB # NVMe has 238GB total
-    block_size: 4KB
-    slab_sizes: [ 4KB, 16KB, 64KB, 1MB ]
-    bandwidth: 1GBps
-    latency: 600us
-    is_shared_device: false
-    borg_capacity_thresh: [ 0.0, 1.0 ]
-
   ssd:
     mount_point: "/mnt/ssd/${USER}/test_hermes"
     capacity: 400GB # SSD has 477GB total
