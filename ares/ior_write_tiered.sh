@@ -7,6 +7,6 @@ HERMES_SCRIPTS_ROOT=`pwd`
 # HERMES
 echo "HERMES TESTS BEGIN"
 # ior_write_posix_fpp "40" "4GB" "1m"
-ior_write_hermes_posix_fpp "40" "4GB" "1m" "_ssd"
-ior_write_hermes_posix_fpp "40" "4GB" "1m" "_ssd_nvme"
-ior_write_hermes_posix_fpp "40" "4GB" "1m" "_ssd_nvme_ram"
+ior_write_hermes_posix_fpp "10" "4GB" "1m" "_ssd"
+ior_write_hermes_posix_fpp "10" "4GB" "1m" "_ssd_nvme"
+ior_write_hermes_posix_fpp "10" "4GB" "1m" "_ssd_nvme_ram"
