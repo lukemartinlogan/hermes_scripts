@@ -4,7 +4,7 @@
 devices:
   ram:
     mount_point: ""
-    capacity: 32GB  # Ares has 48GB total
+    capacity: 24GB  # Ares has 48GB total
     block_size: 4KB
     slab_sizes: [ 4KB, 16KB, 64KB, 1MB ]
     bandwidth: 6000MBps
