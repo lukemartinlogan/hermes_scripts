@@ -118,8 +118,10 @@ class TestManager:
         cmd = [
             f"{self.CMAKE_BINARY_DIR}/bin/api_bench",
             mode,
-            *args,
         ]
+        cmd += [str(arg) for arg in args]
+        cmd = " ".join(cmd)
+        print(cmd)
         MpiExec(cmd,
                 nprocs=nprocs,
                 env=self.get_env())
@@ -140,7 +142,11 @@ class TestManager:
 
         :return: None
         """
-        self.hermes_api_cmd(1, "putget", "4k", 1024)
+        io_sizes = ["4k", "16k", "64k", "1m", "16m"]
+        nprocs = [1, 2, 4, 8]
+        total_size = 8 * (1 << 30)
+
+        self.hermes_api_cmd(1, "putget", "1m", 8192)
 
 if len(sys.argv) != 2:
     print("USAGE: ./test_manager.py [TEST_NAME]")
