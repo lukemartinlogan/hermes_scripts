@@ -12,6 +12,10 @@ class TestManager:
     instance_ = None
     tests_ = {}
 
+    """======================================================================"""
+    """ Test Case Constructor """
+    """======================================================================"""
+
     @staticmethod
     def get_instance():
         if TestManager.instance_ is None:
@@ -35,7 +39,19 @@ class TestManager:
         self.HERMES_CLIENT_CONF = os.path.join(self.HERMES_SCRIPTS_ROOT,
                                                'local', 'conf',
                                                'hermes_client.yaml')
+        self.devices = {}
+        self.set_devices()
         self.find_tests()
+
+    def set_devices(self):
+        self.devices['nvme'] = '/tmp/test_hermes'
+        os.makedirs(self.devices['nvme'], exist_ok=True)
+
+    def cleanup(self):
+        for dir in self.devices.values():
+            files = os.listdir(dir)
+            for file in files:
+                os.remove(os.path.join(dir, file))
 
     def find_tests(self):
         # Filter the list to include only attributes that start with "test"
@@ -57,6 +73,11 @@ class TestManager:
             for i, test in enumerate(self.tests_):
                 print(f"{i}: {test}")
             exit(1)
+        self.cleanup()
+
+    """======================================================================"""
+    """ General Test Helper Functions """
+    """======================================================================"""
 
     def set_hermes_conf(self, name):
         """
@@ -68,16 +89,45 @@ class TestManager:
         self.HERMES_CONF = os.path.join(self.HERMES_SCRIPTS_ROOT,
                                         'local', 'conf', name)
 
-    def get_env(self):
+    def get_env(self, preload=None, mode=None):
         """
         Get the current Hermes environment variables
         :return: Dict of strings
         """
-        return {
+        # Basic environment variables
+        env = {
+            'PATH': os.getenv('PATH'),
+            'LD_LIBRARY_PATH': os.getenv('LD_LIBRARY_PATH'),
             'HERMES_CONF': self.HERMES_CONF,
             'HERMES_CLIENT_CONF': self.HERMES_CLIENT_CONF,
             'HERMES_TRAIT_PATH': self.HERMES_TRAIT_PATH,
         }
+
+        # Hermes interceptor paths
+        if mode is not None:
+            if preload == 'posix':
+                env['LD_PRELOAD'] = f"{self.CMAKE_BINARY_DIR}/bin" \
+                                    f"/libhermes_posix.so"
+            elif preload == 'stdio':
+                env['LD_PRELOAD'] = f"{self.CMAKE_BINARY_DIR}/bin" \
+                                    f"/libhermes_stdio.so"
+            elif preload == 'mpiio':
+                env['LD_PRELOAD'] = f"{self.CMAKE_BINARY_DIR}/bin" \
+                                    f"/libhermes_mpiio.so"
+            elif preload == 'hdf5':
+                env['LD_PRELOAD'] = f"{self.CMAKE_BINARY_DIR}/bin" \
+                                    f"/libhdf5_hermes_vfd.so"
+                env['HDF5_PLUGIN_PATH'] = f"{self.CMAKE_BINARY_DIR}/bin"
+
+        # Hermes mode
+        if mode == 'kDefault':
+            env['HERMES_ADAPTER_MODE'] = 'kDefault'
+        if mode == 'kScratch':
+            env['HERMES_ADAPTER_MODE'] = 'kScratch'
+        if mode == 'kBypass':
+            env['HERMES_ADAPTER_MODE'] = 'kBypass'
+
+        return env
 
     def start_daemon(self, env):
         """
@@ -106,6 +156,10 @@ class TestManager:
         LocalExec(f"{self.CMAKE_BINARY_DIR}/bin/finalize_hermes", env=env)
         self.daemon.wait()
         print ("Stopped daemon")
+
+    """======================================================================"""
+    """ Native API Tests + Commands """
+    """======================================================================"""
 
     def hermes_api_cmd(self, nprocs, mode, *args):
         """
@@ -147,6 +201,123 @@ class TestManager:
         total_size = 8 * (1 << 30)
 
         self.hermes_api_cmd(1, "putget", "1m", 8192)
+
+    """======================================================================"""
+    """ IOR Test Commands """
+    """======================================================================"""
+
+    def get_ior_backend(self, backend):
+        if backend == 'posix':
+            return '-a=POSIX -F'
+        if backend == 'mpiio':
+            return '-a=MPIIO'
+        if backend == 'hdf5':
+            return '-a=HDF5'
+        return ''
+
+    def ior_write_cmd(self, nprocs, transfer_size,
+                      io_size_per_rank,
+                      backend=None,
+                      hermes_mode=None,
+                      dev='nvme'):
+        """
+        A write-only IOR workload
+
+        :param nprocs: MPI process to spawn
+        :param transfer_size: size of each I/O in IOR (e.g., 16k, 1m, 4g)
+        :param io_size_per_rank: Total amount of I/O to do for each rank
+        :param backend: Which backend to use
+        :param hermes_mode: The mode to run Hermes in. None indicates no Hermes.
+        :param dev: The device to output data to
+
+        :return: None
+        """
+        # Start daemon
+        if hermes_mode is not None:
+            self.start_daemon(self.get_env())
+
+        # Run IOR
+        cmd = [
+            'ior',
+            '-w',   # Write-only
+            f"-o {self.devices[dev]}/hi.txt",  # Output file
+            f"-t {transfer_size}",
+            f"-b {io_size_per_rank}",
+            '-k',   # Keep files after IOR
+            self.get_ior_backend(backend)
+        ]
+        cmd = " ".join(cmd)
+        MpiExec(cmd,
+                nprocs=nprocs,
+                env=self.get_env(preload=backend, mode=hermes_mode))
+
+        # Stop daemon
+        if hermes_mode is not None:
+            self.stop_daemon(self.get_env())
+
+    def ior_write_read_no_hermes_cmd(self, nprocs, transfer_size,
+                                     io_size_per_rank,
+                                     backend=None,
+                                     hermes_mode=None,
+                                     dev='nvme'):
+        """
+        A write-then-read IOR workflow
+
+        :param nprocs: MPI process to spawn
+        :param transfer_size: size of each I/O in IOR (e.g., 16k, 1m, 4g)
+        :param io_size_per_rank: Total amount of I/O to do for each rank
+        :param backend: Which backend to use
+        :param hermes_mode: The mode to run Hermes in. None indicates no Hermes.
+        :param dev: The device to output data to
+
+        :return: None
+        """
+        # Start daemon
+        if hermes_mode is not None:
+            self.start_daemon(self.get_env())
+
+        # Run IOR
+        cmd = [
+            'ior',
+            '-w',   # Write-only
+            f"-o {self.devices[dev]}/hi.txt",  # Output file
+            f"-t {transfer_size}",
+            f"-b {io_size_per_rank}",
+            '-k',
+            self.get_ior_backend(backend)
+        ]
+        cmd = " ".join(cmd)
+        MpiExec(cmd,
+                nprocs=nprocs,
+                env=self.get_env(preload=backend, mode=hermes_mode))
+
+        # Stop daemon
+        if hermes_mode is not None:
+            self.stop_daemon(self.get_env())
+
+    """======================================================================"""
+    """ IOR Tests (NO HERMES) """
+    """======================================================================"""
+    def test_ior_backends(self):
+        self.ior_write_cmd(1, '1m', '1g', backend='posix')
+        self.ior_write_cmd(1, '1m', '1g', backend='mpiio')
+        self.ior_write_cmd(1, '1m', '1g', backend='hdf5')
+
+    def test_ior_write(self):
+        self.ior_write_cmd(1, '1m', '4g', backend='posix')
+
+    def test_ior_write_read(self):
+        pass
+
+    """======================================================================"""
+    """ IOR Tests (HERMES) """
+    """======================================================================"""
+    def test_hermes_ior_write(self):
+        self.ior_write_cmd(1, '1m', '4g',
+                           hermes_mode='kScratch', backend='posix')
+
+    def test_hermes_ior_write_read(self):
+        pass
 
 if len(sys.argv) != 2:
     print("USAGE: ./test_manager.py [TEST_NAME]")
