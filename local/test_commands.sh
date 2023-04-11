@@ -10,6 +10,38 @@ echo "${CMAKE_SOURCE_DIR}"
 
 mkdir /tmp/test_hermes
 
+####### API Bench Command #######
+
+# Test the performance of PUT + GET in Hermes
+test_api_bench() {
+  NPROCS=$1
+  MODE=$2
+  OPTS="${@}"
+  echo $OPTS
+  export HERMES_CLIENT_CONF=${HERMES_SCRIPTS_ROOT}/local/conf/hermes_client.yaml
+  export HERMES_CONF=${HERMES_SCRIPTS_ROOT}/local/conf/hermes_server${CONF_SUFFIX}.yaml
+  exit
+
+  # Start daemon
+  echo "STARTING DAEMON"
+  ${CMAKE_BINARY_DIR}/bin/hermes_daemon &
+  sleep 3
+  echo "DAEMON STARTED"
+
+  # Start test
+  echo "${CMAKE_BINARY_DIR}/bin/api_bench ${MODE} ${OPTS}"
+  mpirun -n "${NPROCS}" \
+  -genv PATH="${PATH}" \
+  -genv LD_LIBRARY_PATH="${LD_LIBRARY_PATH}" \
+  -genv HERMES_CLIENT_CONF="${HERMES_CLIENT_CONF}" \
+  -genv HERMES_CONF="${HERMES_CONF}" \
+  -genv HERMES_ADAPTER_MODE=kScratch \
+  "${CMAKE_BINARY_DIR}/bin/api_bench" "${MODE}" "${OPTS}"
+
+  # Finalize Hermes
+  ${CMAKE_BINARY_DIR}/bin/finalize_hermes
+}
+
 ####### IOR COMMANDS (no Hermes) #######
 
 # The IOR command for a write-only workload (no hermes)
