@@ -135,6 +135,11 @@ class TestManager:
         self.stop_daemon(self.get_env())
 
     def test_hermes_put_get(self):
+        """
+        Test case. Test performance of PUT and GET operations in Hermes.
+
+        :return: None
+        """
         self.hermes_api_cmd(1, "putget", "4k", 1024)
 
 if len(sys.argv) != 2:
