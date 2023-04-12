@@ -51,12 +51,12 @@ class AresTestManager(TestManager):
 
         :return: None
         """
-        xfer_sizes = ["1m", "16m"]
+        xfer_sizes = ["1m"]
         hermes_confs = ["hermes_server_ssd.yaml",
                         "hermes_server_ssd_nvme.yaml",
                         "hermes_server_ssd_nvme_ram.yaml"]
-        nprocs = 1
-        total_size = 8 * (1 << 30)
+        nprocs = 12
+        total_size = 24 * (1 << 30)
         size_pp = total_size / nprocs
 
         for xfer_size in xfer_sizes:
