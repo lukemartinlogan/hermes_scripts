@@ -56,7 +56,7 @@ class AresTestManager(TestManager):
                         "hermes_server_ssd_nvme.yaml",
                         "hermes_server_ssd_nvme_ram.yaml"]
         nprocs = 12
-        total_size = 24 * (1 << 30)
+        total_size = 20 * (1 << 30)
         size_pp = total_size / nprocs
 
         for xfer_size in xfer_sizes:
