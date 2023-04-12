@@ -33,6 +33,10 @@ class TestManager(ABC):
         self.set_paths()
         self.set_devices()
 
+        # Make all device paths
+        for path in self.devices.values():
+            os.makedirs(path, exist_ok=True)
+
         self.find_tests()
 
     @abstractmethod

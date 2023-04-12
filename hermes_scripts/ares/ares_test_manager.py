@@ -7,18 +7,19 @@ from jarvis_util.shell.kill import Kill
 from jarvis_util.shell.local_exec import LocalExec
 from hermes_scripts.test_manager.test_manager import TestManager
 import time
+import getpass
 import os, sys
 
 
-class LukeTestManager(TestManager):
+class AresTestManager(TestManager):
     """======================================================================"""
     """ Test Case Constructor """
     """======================================================================"""
     def set_paths(self):
-        self.CMAKE_SOURCE_DIR = os.path.join(os.getenv('MY_PROJECTS'),
+        self.CMAKE_SOURCE_DIR = os.path.join(os.getenv('HOME'),
                                              'hermes')
         self.CMAKE_BINARY_DIR = os.path.join(self.CMAKE_SOURCE_DIR,
-                                             'cmake-build-release-gcc')
+                                             'build')
         self.HERMES_TRAIT_PATH = os.path.join(self.CMAKE_BINARY_DIR, 'bin')
         self.HERMES_CONF = os.path.join(self.TEST_MACHINE_DIR,
                                         'conf', 'hermes_server.yaml')
@@ -26,7 +27,10 @@ class LukeTestManager(TestManager):
                                                'conf', 'hermes_client.yaml')
 
     def set_devices(self):
-        self.devices['nvme'] = '/tmp/test_hermes'
+        user = getpass.getuser()
+        self.devices['ssd'] = f"/mnt/ssd/{user}/test_hermes"
+        self.devices['nvme'] = f"/mnt/nvme/{user}/test_hermes"
+        self.devices['pfs'] = f"{os.environ['HOME']}/test_hermes"
 
     """======================================================================"""
     """ Native API Tests """
