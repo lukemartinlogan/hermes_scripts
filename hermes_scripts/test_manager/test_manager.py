@@ -189,13 +189,13 @@ class TestManager(ABC):
                                     collect_output=True,
                                     exec_async=True)
         else:
-            self.daemon = MpiExec(self.num_nodes,
-                f"{self.CMAKE_BINARY_DIR}/bin/hermes_daemon",
-                hostfile=self.hostfile_path,
-                ppn=1,
-                env=env,
-                collect_output=False,
-                exec_async=True)
+            self.daemon = MpiExec(f"{self.CMAKE_BINARY_DIR}/bin/hermes_daemon",
+                                  nprocs=self.num_nodes,
+                                  hostfile=self.hostfile_path,
+                                  ppn=1,
+                                  env=env,
+                                  collect_output=False,
+                                  exec_async=True)
         time.sleep(3)
         print("Launched")
 
