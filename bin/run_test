@@ -1,0 +1,19 @@
+#!/usr/bin/env python3
+
+from jarvis_util.util.naming import to_camel_case
+from jarvis_util.util.import_mod import load_class
+import sys, os
+import pathlib
+
+if __name__ == '__main__':
+    if len(sys.argv) != 3:
+        print("USAGE: ./luke_test_manager.py [TEST_MACHINE] [TEST_NAME]")
+        exit(1)
+    test_machine = sys.argv[1]
+    test_name = sys.argv[2]
+    HERMES_SCRIPTS_ROOT = pathlib.Path(__file__).parent.parent.resolve()
+    TEST_MACHINE_DIR = os.path.join(HERMES_SCRIPTS_ROOT, test_machine)
+    tests = load_class(f"hermes_scripts.{test_machine}.{test_machine}_test_manager",
+                       TEST_MACHINE_DIR,
+                       to_camel_case(f"{test_machine}_test_manager"))()
+    tests.call(test_name)
