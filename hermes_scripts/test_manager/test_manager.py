@@ -64,6 +64,8 @@ class TestManager(ABC):
         self.HERMES_TRAIT_PATH = None
         self.HERMES_CONF = None
         self.HERMES_CLIENT_CONF = None
+        self.hostfile_path = None
+        self.num_nodes = None
 
         self.tests_ = {}
         self.devices = {}
@@ -171,7 +173,7 @@ class TestManager(ABC):
 
         return env
 
-    def start_daemon(self, env, num_nodes=1):
+    def start_daemon(self, env):
         """
         Helper function. Start the Hermes daemon
 
@@ -181,10 +183,19 @@ class TestManager(ABC):
         Kill("hermes_daemon")
 
         print("Start daemon")
-        self.daemon = LocalExec(f"{self.CMAKE_BINARY_DIR}/bin/hermes_daemon",
-                                env=env,
-                                collect_output=True,
-                                exec_async=True)
+        if self.num_nodes == None:
+            self.daemon = LocalExec(f"{self.CMAKE_BINARY_DIR}/bin/hermes_daemon",
+                                    env=env,
+                                    collect_output=True,
+                                    exec_async=True)
+        else:
+            self.daemon = MpiExec(self.num_nodes,
+                f"{self.CMAKE_BINARY_DIR}/bin/hermes_daemon",
+                hostfile=self.hostfile_path,
+                ppn=1,
+                env=env,
+                collect_output=False,
+                exec_async=True)
         time.sleep(3)
         print("Launched")
 
@@ -214,6 +225,9 @@ class TestManager(ABC):
         """
         if 'hermes_conf' in kwargs:
             self.set_hermes_conf(kwargs['hermes_conf'])
+        ppn = nprocs
+        if 'ppn' in kwargs:
+            ppn = kwargs['ppn']
 
         self.start_daemon(self.get_env())
         cmd = [
@@ -225,6 +239,7 @@ class TestManager(ABC):
         print(f"HERMES_CONF={kwargs['hermes_conf']} {cmd}")
         MpiExec(cmd,
                 nprocs=nprocs,
+                ppn=None,
                 env=self.get_env())
         self.stop_daemon(self.get_env())
 

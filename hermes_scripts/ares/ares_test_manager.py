@@ -25,6 +25,9 @@ class AresTestManager(TestManager):
                                         'conf', 'hermes_server.yaml')
         self.HERMES_CLIENT_CONF = os.path.join(self.TEST_MACHINE_DIR,
                                                'conf', 'hermes_client.yaml')
+        self.hostfile_path = os.path.join(os.getenv('HOME'),
+                                          'hostfile.txt')
+        self.num_nodes = 2
 
     def set_devices(self):
         user = getpass.getuser()
@@ -65,6 +68,31 @@ class AresTestManager(TestManager):
                 if count_pp * nprocs > 128000:
                     count_pp = 128000 / nprocs
                 self.hermes_api_cmd(nprocs, "putget", xfer_size, count_pp,
+                                    hermes_conf=hermes_conf)
+
+    def test_hermes_put_get_scale(self):
+        """
+        Test case. Test performance of PUT and GET operations in Hermes.
+        Vary number of processes and nodes
+
+        :return: None
+        """
+        xfer_sizes = ["1m"]
+        hermes_confs = [#"hermes_server_ssd.yaml",
+                        #"hermes_server_ssd_nvme.yaml",
+                        "hermes_server_ssd_nvme_ram.yaml"]
+        nprocs = 24
+        max_ppn = 12
+        total_size = 40 * (1 << 30)
+        size_pp = total_size / nprocs
+
+        for xfer_size in xfer_sizes:
+            for hermes_conf in hermes_confs:
+                count_pp = int(size_pp / SizeConv.to_int(xfer_size))
+                if count_pp * nprocs > 128000:
+                    count_pp = 128000 / nprocs
+                self.hermes_api_cmd(nprocs, "putget", xfer_size, count_pp,
+                                    ppn=max_ppn,
                                     hermes_conf=hermes_conf)
 
     def test_hermes_create_bucket(self):
@@ -177,8 +205,8 @@ class AresTestManager(TestManager):
         self.ior_write_cmd(1, '1m', '1g', backend='mpiio')
         self.ior_write_cmd(1, '1m', '1g', backend='hdf5')
 
-    def test_ior_write_tiered(self):
-        self.ior_write_cmd(4, '1m', '4g',
+    def test_ior_write(self):
+        self.ior_write_cmd(8, '1m', '4g',
                            backend='posix',
                            dev='ssd')
 
