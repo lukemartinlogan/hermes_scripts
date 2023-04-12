@@ -22,7 +22,8 @@ class AresTestManager(TestManager):
                                              'build')
         self.HERMES_TRAIT_PATH = os.path.join(self.CMAKE_BINARY_DIR, 'bin')
         self.HERMES_CONF = os.path.join(self.TEST_MACHINE_DIR,
-                                        'conf', 'hermes_server.yaml')
+                                        'conf',
+                                        'hermes_server_ssd_nvme_ram_mn.yaml')
         self.HERMES_CLIENT_CONF = os.path.join(self.TEST_MACHINE_DIR,
                                                'conf', 'hermes_client.yaml')
         self.hostfile_path = os.path.join(os.getenv('HOME'),
