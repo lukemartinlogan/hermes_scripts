@@ -24,6 +24,7 @@ class SizeConv:
             return SizeConv.TB(text)
         if 'p' in text:
             return SizeConv.PB(text)
+        return int(text)
 
     @staticmethod
     def KB(num):
