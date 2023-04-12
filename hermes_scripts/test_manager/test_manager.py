@@ -232,6 +232,17 @@ class TestManager(ABC):
     """ IOR Test Commands """
     """======================================================================"""
 
+    def memcpy_test_cmd(self, nprocs, xfer_size, count):
+        cmd = [
+            f"{self.CMAKE_BINARY_DIR}/bin/memcpy_bench",
+            str(xfer_size),
+            str(count)
+        ]
+        cmd = " ".join(cmd)
+        MpiExec(cmd,
+                nprocs=nprocs,
+                env=self.get_env())
+
     def get_ior_backend(self, backend):
         if backend == 'posix':
             return '-a=POSIX -F'

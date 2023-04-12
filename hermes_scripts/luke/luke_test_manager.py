@@ -140,6 +140,11 @@ class LukeTestManager(TestManager):
     """======================================================================"""
     """ IOR Tests (NO HERMES) """
     """======================================================================"""
+    def test_ram(self):
+        self.memcpy_test_cmd(1, '1m', 4096)
+        self.memcpy_test_cmd(2, '1m', 2048)
+        self.memcpy_test_cmd(4, '1m', 1024)
+
     def test_ior_backends(self):
         self.ior_write_cmd(1, '1m', '1g', backend='posix')
         self.ior_write_cmd(1, '1m', '1g', backend='mpiio')
