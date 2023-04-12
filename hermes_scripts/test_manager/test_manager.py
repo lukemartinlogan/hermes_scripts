@@ -222,7 +222,7 @@ class TestManager(ABC):
         ]
         cmd += [str(arg) for arg in args]
         cmd = " ".join(cmd)
-        print(cmd)
+        print(f"HERMES_CONF={kwargs['hermes_conf']} {cmd}")
         MpiExec(cmd,
                 nprocs=nprocs,
                 env=self.get_env())
