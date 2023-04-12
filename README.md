@@ -9,7 +9,10 @@ for the act of
 spack install ior +hdf5
 spack install hermes
 spack load hermes ior
-python3 -m pip install git+https://github.com/lukemartinlogan/jarvis-util.git
+git clone https://github.com/lukemartinlogan/jarvis-util.git
+cd jarvis-util
+python3 -m pip install -r requirements.txt
+python3 -m pip install -e .
 ```
 
 Please note that Hermes may install python as a dependency, so you

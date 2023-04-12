@@ -5,7 +5,7 @@ from jarvis_util.jutil_manager import JutilManager
 from jarvis_util.shell.mpi_exec import MpiExec
 from jarvis_util.shell.kill import Kill
 from jarvis_util.shell.local_exec import LocalExec
-from hermes_scripts.test_manager.test_manager import TestManager
+from hermes_scripts.test_manager.test_manager import TestManager, SizeConv
 import time
 import getpass
 import os, sys
@@ -45,17 +45,25 @@ class AresTestManager(TestManager):
         self.start_daemon(self.get_env())
         self.stop_daemon(self.get_env())
 
-    def test_hermes_put_get(self):
+    def test_hermes_put_get_tiered(self):
         """
         Test case. Test performance of PUT and GET operations in Hermes.
 
         :return: None
         """
-        io_sizes = ["4k", "16k", "64k", "1m", "16m"]
-        nprocs = [1, 2, 4, 8]
+        xfer_sizes = ["4k", "16k", "64k", "1m", "16m"]
+        hermes_confs = ["hermes_server_ssd.yaml",
+                        "hermes_server_ssd_nvme.yaml",
+                        "hermes_server_ssd_nvme_ram.yaml"]
+        nprocs = 8
         total_size = 8 * (1 << 30)
+        size_pp = total_size / 8
 
-        self.hermes_api_cmd(1, "putget", "1m", 8192)
+        for xfer_size in xfer_sizes:
+            for hermes_conf in hermes_confs:
+                count_pp = int(size_pp / SizeConv.to_int(xfer_size))
+                self.hermes_api_cmd(nprocs, "putget", "1m", count_pp,
+                                    hermes_conf=hermes_conf)
 
     def test_hermes_create_bucket(self):
         """

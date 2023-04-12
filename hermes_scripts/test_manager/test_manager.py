@@ -10,6 +10,34 @@ import os, sys
 from abc import ABC, abstractmethod
 
 
+class SizeConv:
+    @staticmethod
+    def to_int(text):
+        text = text.lower()
+        if 'k' in text:
+            return int(text) * SizeConv.KB()
+
+    @staticmethod
+    def KB(num):
+        return int(num.split('k')[0]) * (1 << 10)
+
+    @staticmethod
+    def MB(num):
+        return int(num.split('m')[0]) * (1 << 20)
+
+    @staticmethod
+    def GB(num):
+        return int(num.split('g')[0]) * (1 << 30)
+
+    @staticmethod
+    def TB(num):
+        return int(num.split('t')[0]) * (1 << 40)
+
+    @staticmethod
+    def PB(num):
+        return int(num.split('p')[0]) * (1 << 50)
+
+
 class TestManager(ABC):
     """======================================================================"""
     """ Test Case Constructor """
