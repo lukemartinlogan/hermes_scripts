@@ -62,6 +62,8 @@ class AresTestManager(TestManager):
         for xfer_size in xfer_sizes:
             for hermes_conf in hermes_confs:
                 count_pp = int(size_pp / SizeConv.to_int(xfer_size))
+                if count_pp * nprocs > 128000:
+                    count_pp = 128000 / nprocs
                 self.hermes_api_cmd(nprocs, "putget", xfer_size, count_pp,
                                     hermes_conf=hermes_conf)
 
