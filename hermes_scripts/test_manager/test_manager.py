@@ -64,6 +64,7 @@ class TestManager(ABC):
                 self.tests_[attr] = getattr(self, attr)
 
     def call(self, test_name):
+        self.set_paths()
         test_name = test_name.strip()
         if test_name in self.tests_:
             print(f"Running test: {test_name}")
@@ -86,8 +87,12 @@ class TestManager(ABC):
         :param name: the name of the YAML file
         :return: None
         """
-        self.HERMES_CONF = os.path.join(self.HERMES_SCRIPTS_ROOT,
-                                        self.TEST_SYSTEM, 'conf', name)
+        if name is not None:
+            self.HERMES_CONF = os.path.join(self.TEST_MACHINE_DIR,
+                                            'conf', name)
+        else:
+            self.HERMES_CONF = os.path.join(self.TEST_MACHINE_DIR,
+                                            'conf', 'hermes_server.yaml')
 
     def get_env(self, preload=None, mode=None):
         """
@@ -164,12 +169,14 @@ class TestManager(ABC):
     """ Native API Tests + Commands """
     """======================================================================"""
 
-    def hermes_api_cmd(self, nprocs, mode, *args):
+    def hermes_api_cmd(self, nprocs, mode, *args, **kwargs):
         """
         Helper function. Run Hermes internal API performance tests.
 
         :return: None
         """
+        if 'hermes_conf' in kwargs:
+            self.set_hermes_conf(kwargs['hermes_conf'])
 
         self.start_daemon(self.get_env())
         cmd = [
@@ -201,6 +208,7 @@ class TestManager(ABC):
                       io_size_per_rank,
                       backend=None,
                       hermes_mode=None,
+                      hermes_conf=None,
                       dev='nvme'):
         """
         A write-only IOR workload
@@ -210,10 +218,13 @@ class TestManager(ABC):
         :param io_size_per_rank: Total amount of I/O to do for each rank
         :param backend: Which backend to use
         :param hermes_mode: The mode to run Hermes in. None indicates no Hermes.
+        :param hermes_conf: The server config to use for Hermes.
         :param dev: The device to output data to
 
         :return: None
         """
+        self.set_hermes_conf(hermes_conf)
+
         # Start daemon
         if hermes_mode is not None:
             self.start_daemon(self.get_env())
@@ -241,6 +252,7 @@ class TestManager(ABC):
                                      io_size_per_rank,
                                      backend=None,
                                      hermes_mode=None,
+                                     hermes_conf=None,
                                      dev='nvme'):
         """
         A write-then-read IOR workflow
@@ -250,10 +262,13 @@ class TestManager(ABC):
         :param io_size_per_rank: Total amount of I/O to do for each rank
         :param backend: Which backend to use
         :param hermes_mode: The mode to run Hermes in. None indicates no Hermes.
+        :param hermes_conf: The server config to use for Hermes.
         :param dev: The device to output data to
 
         :return: None
         """
+        self.set_hermes_conf(hermes_conf)
+
         # Start daemon
         if hermes_mode is not None:
             self.start_daemon(self.get_env())
