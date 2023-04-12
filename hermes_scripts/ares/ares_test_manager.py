@@ -51,7 +51,7 @@ class AresTestManager(TestManager):
 
         :return: None
         """
-        xfer_sizes = ["1m"]
+        xfer_sizes = ["4k", "1m"]
         hermes_confs = [#"hermes_server_ssd.yaml",
                         #"hermes_server_ssd_nvme.yaml",
                         "hermes_server_ssd_nvme_ram.yaml"]
