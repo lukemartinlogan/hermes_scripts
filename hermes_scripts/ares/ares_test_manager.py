@@ -87,7 +87,7 @@ class AresTestManager(TestManager):
 
     def test_hermes_create_bucket_scale(self):
         """
-        Test case. Test performance of PUT and GET operations in Hermes.
+        Test case. Test performance of creating a bucket (scaling).
 
         :return: None
         """
@@ -95,6 +95,51 @@ class AresTestManager(TestManager):
         self.hermes_api_cmd(2, "create_bkt", 64e3)
         self.hermes_api_cmd(4, "create_bkt", 32e3)
         self.hermes_api_cmd(8, "create_bkt", 16e3)
+
+    def test_hermes_create_blob_1bkt(self):
+        """
+        Test case. Test performance of creating blobs in a
+        single bucket (scale).
+
+        :return: None
+        """
+        self.hermes_api_cmd(1, "create_blob_1bkt", 128e3)
+        self.hermes_api_cmd(2, "create_blob_1bkt", 64e3)
+        self.hermes_api_cmd(4, "create_blob_1bkt", 32e3)
+        self.hermes_api_cmd(8, "create_blob_1bkt", 16e3)
+
+    def test_hermes_create_blob_Nbkt(self):
+        """
+        Test case. Test performance of creating blobs per-bucket (scale).
+
+        :return: None
+        """
+        self.hermes_api_cmd(1, "create_blob_Nbkt", 128e3)
+        self.hermes_api_cmd(2, "create_blob_Nbkt", 64e3)
+        self.hermes_api_cmd(4, "create_blob_Nbkt", 32e3)
+        self.hermes_api_cmd(8, "create_blob_Nbkt", 16e3)
+
+    def test_hermes_del_bkt(self):
+        """
+        Test case. Test performance of deleting a bucket.
+
+        :return: None
+        """
+        self.hermes_api_cmd(1, "del_bkt", 1, 128e3)
+        self.hermes_api_cmd(2, "del_bkt", 1, 64e3)
+        self.hermes_api_cmd(4, "del_bkt", 1, 32e3)
+        self.hermes_api_cmd(8, "del_bkt", 1, 16e3)
+
+    def test_hermes_del_blobs(self):
+        """
+        Test case. Test performance of deleting a bucket.
+
+        :return: None
+        """
+        self.hermes_api_cmd(1, "del_blobs", 128e3)
+        self.hermes_api_cmd(2, "del_blobs", 64e3)
+        self.hermes_api_cmd(4, "del_blobs", 32e3)
+        self.hermes_api_cmd(8, "del_blobs", 16e3)
 
     """======================================================================"""
     """ IOR Tests (NO HERMES) """
@@ -104,8 +149,10 @@ class AresTestManager(TestManager):
         self.ior_write_cmd(1, '1m', '1g', backend='mpiio')
         self.ior_write_cmd(1, '1m', '1g', backend='hdf5')
 
-    def test_ior_write(self):
-        self.ior_write_cmd(1, '1m', '4g', backend='posix')
+    def test_ior_write_tiered(self):
+        self.ior_write_cmd(4, '1m', '4g',
+                           backend='posix',
+                           dev='ssd')
 
     def test_ior_write_read(self):
         pass
@@ -113,9 +160,23 @@ class AresTestManager(TestManager):
     """======================================================================"""
     """ IOR Tests (HERMES) """
     """======================================================================"""
-    def test_hermes_ior_write(self):
-        self.ior_write_cmd(1, '1m', '4g',
-                           hermes_mode='kScratch', backend='posix')
+    def test_hermes_ior_write_tiered(self):
+        self.ior_write_cmd(4, '1m', '4g',
+                           hermes_mode='kScratch',
+                           hermes_conf='hermes_server_ssd.yaml',
+                           backend='posix',
+                           dev='ssd')
+        self.ior_write_cmd(4, '1m', '4g',
+                           hermes_mode='kScratch',
+                           hermes_conf='hermes_server_ssd_nvme.yaml',
+                           backend='posix',
+                           dev='ssd')
+        self.ior_write_cmd(4, '1m', '4g',
+                           hermes_mode='kScratch',
+                           hermes_conf='hermes_server_ssd_nvme_ram.yaml',
+                           backend='posix',
+                           dev='ssd')
 
     def test_hermes_ior_write_read(self):
         pass
+
