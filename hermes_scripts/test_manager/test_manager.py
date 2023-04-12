@@ -15,7 +15,15 @@ class SizeConv:
     def to_int(text):
         text = text.lower()
         if 'k' in text:
-            return int(text) * SizeConv.KB()
+            return SizeConv.KB(text)
+        if 'm' in text:
+            return SizeConv.MB(text)
+        if 'g' in text:
+            return SizeConv.GB(text)
+        if 't' in text:
+            return SizeConv.TB(text)
+        if 'p' in text:
+            return SizeConv.PB(text)
 
     @staticmethod
     def KB(num):
