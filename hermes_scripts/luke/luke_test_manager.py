@@ -15,17 +15,15 @@ class LukeTestManager(TestManager):
     """ Test Case Constructor """
     """======================================================================"""
     def set_paths(self):
-        self.HERMES_SCRIPTS_ROOT = os.getcwd()
         self.CMAKE_SOURCE_DIR = os.path.join(os.getenv('MY_PROJECTS'),
                                              'hermes')
         self.CMAKE_BINARY_DIR = os.path.join(self.CMAKE_SOURCE_DIR,
                                              'cmake-build-release-gcc')
         self.HERMES_TRAIT_PATH = os.path.join(self.CMAKE_BINARY_DIR, 'bin')
-        self.HERMES_CONF = os.path.join(self.HERMES_SCRIPTS_ROOT,
-                                        'luke', 'conf', 'hermes_server.yaml')
-        self.HERMES_CLIENT_CONF = os.path.join(self.HERMES_SCRIPTS_ROOT,
-                                               'luke', 'conf',
-                                               'hermes_client.yaml')
+        self.HERMES_CONF = os.path.join(self.TEST_MACHINE_DIR,
+                                        'conf', 'hermes_server.yaml')
+        self.HERMES_CLIENT_CONF = os.path.join(self.TEST_MACHINE_DIR,
+                                               'conf', 'hermes_client.yaml')
 
     def set_devices(self):
         self.devices['nvme'] = '/tmp/test_hermes'
@@ -118,11 +116,3 @@ class LukeTestManager(TestManager):
 
     def test_hermes_ior_write_read(self):
         pass
-
-
-if len(sys.argv) != 2:
-    print("USAGE: ./luke_test_manager.py [TEST_NAME]")
-    exit(1)
-test_name = sys.argv[1]
-tests = LukeTestManager()
-tests.call(test_name)

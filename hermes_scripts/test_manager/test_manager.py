@@ -14,38 +14,34 @@ class TestManager(ABC):
     """======================================================================"""
     """ Test Case Constructor """
     """======================================================================"""
-    def __init__(self):
+    def __init__(self, hermes_scripts_root, test_machine_dir):
         """
         Initialize test manager
         """
         jutil = JutilManager.get_instance()
         jutil.collect_output = False
+        self.TEST_MACHINE_DIR = test_machine_dir
+        self.HERMES_SCRIPTS_ROOT = hermes_scripts_root
+        self.CMAKE_SOURCE_DIR = None
+        self.CMAKE_BINARY_DIR = None
+        self.HERMES_TRAIT_PATH = None
+        self.HERMES_CONF = None
+        self.HERMES_CLIENT_CONF = None
+
         self.tests_ = {}
         self.devices = {}
         self.set_paths()
         self.set_devices()
+
         self.find_tests()
 
     @abstractmethod
     def set_paths(self):
-        self.TEST_SYSTEM = 'luke'
-        self.HERMES_SCRIPTS_ROOT = os.getcwd()
-        self.CMAKE_SOURCE_DIR = os.path.join(os.getenv('MY_PROJECTS'),
-                                             'hermes')
-        self.CMAKE_BINARY_DIR = os.path.join(self.CMAKE_SOURCE_DIR,
-                                             'cmake-build-release-gcc')
-        self.HERMES_TRAIT_PATH = os.path.join(self.CMAKE_BINARY_DIR, 'bin')
-        self.HERMES_CONF = os.path.join(self.HERMES_SCRIPTS_ROOT,
-                                        self.TEST_SYSTEM,
-                                        'conf', 'hermes_server.yaml')
-        self.HERMES_CLIENT_CONF = os.path.join(self.HERMES_SCRIPTS_ROOT,
-                                               self.TEST_SYSTEM,
-                                               'conf', 'hermes_client.yaml')
+        pass
 
     @abstractmethod
     def set_devices(self):
-        self.devices['nvme'] = '/tmp/test_hermes'
-        os.makedirs(self.devices['nvme'], exist_ok=True)
+        pass
 
     def cleanup(self):
         for dir in self.devices.values():
@@ -55,19 +51,19 @@ class TestManager(ABC):
 
     def find_tests(self):
         # Filter the list to include only attributes that start with "test"
-        test_attributes = [attr for attr in dir(TestManager) if
+        test_attributes = [attr for attr in dir(self) if
                            attr.startswith("test")]
 
         # Get a reference to each test method
         for attr in test_attributes:
-            if callable(getattr(TestManager, attr)):
-                self.tests_[attr] = getattr(TestManager, attr)
+            if callable(getattr(self, attr)):
+                self.tests_[attr] = getattr(self, attr)
 
     def call(self, test_name):
         test_name = test_name.strip()
         if test_name in self.tests_:
             print(f"Running test: {test_name}")
-            self.tests_[test_name](self)
+            self.tests_[test_name]()
         else:
             print(f"{test_name} was not found. Available tests: ")
             for i, test in enumerate(self.tests_):
@@ -276,11 +272,3 @@ class TestManager(ABC):
         # Stop daemon
         if hermes_mode is not None:
             self.stop_daemon(self.get_env())
-
-
-if len(sys.argv) != 2:
-    print("USAGE: ./luke_test_manager.py [TEST_NAME]")
-    exit(1)
-test_name = sys.argv[1]
-tests = TestManager()
-tests.call(test_name)
