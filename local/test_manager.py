@@ -8,20 +8,11 @@ from jarvis_util.shell.local_exec import LocalExec
 import time
 import os, sys
 
-class TestManager:
-    instance_ = None
-    tests_ = {}
 
+class TestManager:
     """======================================================================"""
     """ Test Case Constructor """
     """======================================================================"""
-
-    @staticmethod
-    def get_instance():
-        if TestManager.instance_ is None:
-            TestManager.instance_ = TestManager()
-        return TestManager.instance_
-
     def __init__(self):
         """
         Initialize test manager
@@ -39,9 +30,23 @@ class TestManager:
         self.HERMES_CLIENT_CONF = os.path.join(self.HERMES_SCRIPTS_ROOT,
                                                'local', 'conf',
                                                'hermes_client.yaml')
+        self.tests_ = {}
         self.devices = {}
         self.set_devices()
         self.find_tests()
+
+    def set_paths(self):
+        self.HERMES_SCRIPTS_ROOT = os.getcwd()
+        self.CMAKE_SOURCE_DIR = os.path.join(os.getenv('MY_PROJECTS'),
+                                             'hermes')
+        self.CMAKE_BINARY_DIR = os.path.join(self.CMAKE_SOURCE_DIR,
+                                             'cmake-build-release-gcc')
+        self.HERMES_TRAIT_PATH = os.path.join(self.CMAKE_BINARY_DIR, 'bin')
+        self.HERMES_CONF = os.path.join(self.HERMES_SCRIPTS_ROOT,
+                                        'local', 'conf', 'hermes_server.yaml')
+        self.HERMES_CLIENT_CONF = os.path.join(self.HERMES_SCRIPTS_ROOT,
+                                               'local', 'conf',
+                                               'hermes_client.yaml')
 
     def set_devices(self):
         self.devices['nvme'] = '/tmp/test_hermes'
@@ -61,7 +66,7 @@ class TestManager:
         # Get a reference to each test method
         for attr in test_attributes:
             if callable(getattr(TestManager, attr)):
-                TestManager.tests_[attr] = getattr(TestManager, attr)
+                self.tests_[attr] = getattr(TestManager, attr)
 
     def call(self, test_name):
         test_name = test_name.strip()
@@ -141,6 +146,7 @@ class TestManager:
         print("Start daemon")
         self.daemon = LocalExec(f"{self.CMAKE_BINARY_DIR}/bin/hermes_daemon",
                                 env=env,
+                                collect_output=True,
                                 exec_async=True)
         time.sleep(3)
         print("Launched")
@@ -153,9 +159,11 @@ class TestManager:
         :return: None
         """
         print("Stop daemon")
-        LocalExec(f"{self.CMAKE_BINARY_DIR}/bin/finalize_hermes", env=env)
+        LocalExec(f"{self.CMAKE_BINARY_DIR}/bin/finalize_hermes",
+                  collect_output=True,
+                  env=env)
         self.daemon.wait()
-        print ("Stopped daemon")
+        print("Stopped daemon")
 
     """======================================================================"""
     """ Native API Tests + Commands """
@@ -201,6 +209,20 @@ class TestManager:
         total_size = 8 * (1 << 30)
 
         self.hermes_api_cmd(1, "putget", "1m", 8192)
+
+    def test_hermes_create_bucket(self):
+        """
+        Test case. Test performance of PUT and GET operations in Hermes.
+
+        :return: None
+        """
+        self.hermes_api_cmd(1, "create_bkt", 20e3)
+        self.hermes_api_cmd(1, "create_bkt", 40e3)
+        self.hermes_api_cmd(1, "create_bkt", 80e3)
+        self.hermes_api_cmd(1, "create_bkt", 160e3)
+        self.hermes_api_cmd(1, "create_bkt", 320e3)
+        self.hermes_api_cmd(1, "create_bkt", 640e3)
+        self.hermes_api_cmd(1, "create_bkt", 1280e3)
 
     """======================================================================"""
     """ IOR Test Commands """
@@ -319,9 +341,10 @@ class TestManager:
     def test_hermes_ior_write_read(self):
         pass
 
+
 if len(sys.argv) != 2:
     print("USAGE: ./test_manager.py [TEST_NAME]")
     exit(1)
 test_name = sys.argv[1]
-tests = TestManager.get_instance()
+tests = TestManager()
 tests.call(test_name)
