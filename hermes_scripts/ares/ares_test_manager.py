@@ -154,13 +154,21 @@ class AresTestManager(TestManager):
     """======================================================================"""
     """ IOR Tests (NO HERMES) """
     """======================================================================"""
-    def test_ram(self):
+    def test_ram_bw(self):
         self.memcpy_test_cmd(1, '1m', 32768 / 2)
         self.memcpy_test_cmd(2, '1m', 16384 / 2)
         self.memcpy_test_cmd(4, '1m', 8192 / 2)
         self.memcpy_test_cmd(8, '1m', 4096 / 2)
         self.memcpy_test_cmd(16, '1m', 2048 / 2)
         self.memcpy_test_cmd(32, '1m', 1024 / 2)
+
+    def test_ram_latency(self):
+        self.memcpy_test_cmd(1, '4k', 32768 / 2)
+        self.memcpy_test_cmd(2, '4k', 16384 / 2)
+        self.memcpy_test_cmd(4, '4k', 8192 / 2)
+        self.memcpy_test_cmd(8, '4k', 4096 / 2)
+        self.memcpy_test_cmd(16, '4k', 2048 / 2)
+        self.memcpy_test_cmd(32, '4k', 1024 / 2)
 
     def test_ior_backends(self):
         self.ior_write_cmd(1, '1m', '1g', backend='posix')
