@@ -50,9 +50,10 @@ class AresTestManager(TestManager):
 
         :return: None
         """
-        self.start_daemon(self.spawn_info(num_nodes=2,
-                                          hostfile=self.HOSTFILE,
-                                          hermes_conf='hermes_server_mn'))
+        self.start_daemon(self.spawn_info(
+            num_nodes=2,
+            hostfile=self.HOSTFILE,
+            hermes_conf='hermes_server_ssd_nvme_ram_mn'))
         self.stop_daemon()
 
     def test_hermes_put_get_tiered(self):
