@@ -23,6 +23,9 @@ should do spack load first.
 To execute a test, do the following
 ```bash
 cd /path/to/hermes_scripts
+spack load --only dependencies hermes
+spack load ior
+bin/cache_env
 bash run_test.sh [TEST_MACHINE] [TEST_NAME]
 ```
 
