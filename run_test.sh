@@ -1,7 +1,7 @@
 #!/bin/bash
 
-spack load --only dependencies hermes
-spack load ior
+# Use the cached environment
+. .cache/env.sh
 
 # NOTE: this script assumes you are cd'd into hermes_scripts
 TEST_MACHINE=$1
