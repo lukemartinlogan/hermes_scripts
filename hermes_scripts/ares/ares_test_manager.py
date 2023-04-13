@@ -4,7 +4,7 @@ USAGE: luke_test_manager.py [TEST_NAME]
 from jarvis_util.jutil_manager import JutilManager
 from jarvis_util.shell.mpi_exec import MpiExec
 from jarvis_util.shell.kill import Kill
-from jarvis_util.shell.local_exec import LocalExec
+from jarvis_util.shell.exec import Exec
 from hermes_scripts.test_manager.test_manager import TestManager, SizeConv
 import time
 import getpass
@@ -43,6 +43,13 @@ class AresTestManager(TestManager):
         """
         self.start_daemon(self.spawn_info(hermes_conf='hermes_server'))
         self.stop_daemon()
+
+    def test_mpi(self):
+        Exec('mpirun --version',
+             self.spawn_info(
+                 num_nodes=2,
+                 hostfile=self.HOSTFILE,
+                 hermes_conf='hermes_server_ssd_nvme_ram_mn'))
 
     def test_hermes_launch_mn(self):
         """
