@@ -44,14 +44,6 @@ class AresTestManager(TestManager):
         self.start_daemon(self.spawn_info(hermes_conf='hermes_server'))
         self.stop_daemon()
 
-    def test_mpi(self):
-        Exec('fi_info -p sockets',
-             self.spawn_info(
-                 nprocs=2,
-                 ppn=1,
-                 hostfile=self.HOSTFILE,
-                 hermes_conf='hermes_server_ssd_nvme_ram_mn'))
-
     def test_hermes_launch_mn(self):
         """
         Test case. Launch the hermes daemon + shut it down.

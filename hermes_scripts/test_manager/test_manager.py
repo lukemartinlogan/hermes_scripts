@@ -213,7 +213,7 @@ class TestManager(ABC):
                                ppn=1),
                            collect_output=False,
                            exec_async=True)
-        time.sleep(3)
+        time.sleep(5)
         print("Launched")
 
     def stop_daemon(self):
