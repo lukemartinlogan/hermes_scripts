@@ -93,8 +93,11 @@ class TestManager(ABC):
 
     def spawn_info(self, nprocs=None, ppn=None, hostfile=None, num_nodes=None,
                    hermes_conf=None, hermes_mode=None, api=None):
+        # Whether to deploy hermes
+        use_hermes = hermes_mode is not None \
+                     or api == 'native' or hermes_conf is not None
+
         # Get the hermes configuration path
-        use_hermes = hermes_mode is not None or api == 'native'
         if use_hermes and hermes_conf is None:
             if hermes_conf is None:
                 hermes_conf = os.path.join(self.TEST_MACHINE_DIR,
