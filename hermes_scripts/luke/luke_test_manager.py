@@ -38,7 +38,7 @@ class LukeTestManager(TestManager):
 
         :return: None
         """
-        self.start_daemon(self.spawn_info(api='native'))
+        self.start_daemon(self.spawn_info(hermes_conf='hermes_server'))
         self.stop_daemon()
 
     def test_hermes_put_get(self):
@@ -51,8 +51,9 @@ class LukeTestManager(TestManager):
         nprocs = [1, 2, 4, 8]
         total_size = 8 * (1 << 30)
 
-        self.hermes_api_cmd(self.spawn_info(nprocs=1, api='native'),
-                            "putget", "1m", 8192)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=1,
+            hermes_conf='hermes_server'), "putget", "1m", 8192)
 
     def test_hermes_create_bucket(self):
         """
@@ -60,20 +61,27 @@ class LukeTestManager(TestManager):
 
         :return: None
         """
-        self.hermes_api_cmd(self.spawn_info(nprocs=1, api='native'),
-                            "create_bkt", 20e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=1, api='native'),
-                            "create_bkt", 40e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=1, api='native'),
-                            "create_bkt", 80e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=1, api='native'),
-                            "create_bkt", 160e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=1, api='native'),
-                            "create_bkt", 320e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=1, api='native'),
-                            "create_bkt", 640e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=1, api='native'),
-                            "create_bkt", 1280e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=1,
+            hermes_conf='hermes_server'), "create_bkt", 20e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=1,
+            hermes_conf='hermes_server'), "create_bkt", 40e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=1,
+            hermes_conf='hermes_server'), "create_bkt", 80e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=1,
+            hermes_conf='hermes_server'), "create_bkt", 160e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=1,
+            hermes_conf='hermes_server'), "create_bkt", 320e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=1,
+            hermes_conf='hermes_server'), "create_bkt", 640e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=1,
+            hermes_conf='hermes_server'), "create_bkt", 1280e3)
 
     def test_hermes_get_bucket(self):
         """
@@ -81,20 +89,27 @@ class LukeTestManager(TestManager):
 
         :return: None
         """
-        self.hermes_api_cmd(self.spawn_info(nprocs=1, api='native'),
-                            "get_bkt", 20e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=1, api='native'),
-                            "get_bkt", 40e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=1, api='native'),
-                            "get_bkt", 80e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=1, api='native'),
-                            "get_bkt", 160e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=1, api='native'),
-                            "get_bkt", 320e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=1, api='native'),
-                            "get_bkt", 640e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=1, api='native'),
-                            "get_bkt", 1280e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=1,
+            hermes_conf='hermes_server'), "get_bkt", 20e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=1,
+            hermes_conf='hermes_server'), "get_bkt", 40e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=1,
+            hermes_conf='hermes_server'), "get_bkt", 80e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=1,
+            hermes_conf='hermes_server'), "get_bkt", 160e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=1,
+            hermes_conf='hermes_server'), "get_bkt", 320e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=1,
+            hermes_conf='hermes_server'), "get_bkt", 640e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=1,
+            hermes_conf='hermes_server'), "get_bkt", 1280e3)
 
     def test_hermes_create_bucket_scale(self):
         """
@@ -102,14 +117,18 @@ class LukeTestManager(TestManager):
 
         :return: None
         """
-        self.hermes_api_cmd(self.spawn_info(nprocs=1, api='native'),
-                            "create_bkt", 128e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=2, api='native'),
-                            "create_bkt", 64e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=4, api='native'),
-                            "create_bkt", 32e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=8, api='native'),
-                            "create_bkt", 16e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=1,
+            hermes_conf='hermes_server'), "create_bkt", 128e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=2,
+            hermes_conf='hermes_server'), "create_bkt", 64e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=4,
+            hermes_conf='hermes_server'), "create_bkt", 32e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=8,
+            hermes_conf='hermes_server'), "create_bkt", 16e3)
 
     def test_hermes_create_blob_1bkt(self):
         """
@@ -118,14 +137,18 @@ class LukeTestManager(TestManager):
 
         :return: None
         """
-        self.hermes_api_cmd(self.spawn_info(nprocs=1, api='native'),
-                            "create_blob_1bkt", 128e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=2, api='native'),
-                            "create_blob_1bkt", 64e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=4, api='native'),
-                            "create_blob_1bkt", 32e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=8, api='native'),
-                            "create_blob_1bkt", 16e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=1,
+            hermes_conf='hermes_server'), "create_blob_1bkt", 128e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=2,
+            hermes_conf='hermes_server'), "create_blob_1bkt", 64e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=4,
+            hermes_conf='hermes_server'), "create_blob_1bkt", 32e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=8,
+            hermes_conf='hermes_server'), "create_blob_1bkt", 16e3)
 
     def test_hermes_create_blob_Nbkt(self):
         """
@@ -133,14 +156,17 @@ class LukeTestManager(TestManager):
 
         :return: None
         """
-        self.hermes_api_cmd(self.spawn_info(nprocs=1),
-                            "create_blob_Nbkt", 128e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=2, api='native'),
-                            "create_blob_Nbkt", 64e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=4, api='native'),
-                            "create_blob_Nbkt", 32e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=8, api='native'),
-                            "create_blob_Nbkt", 16e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=1), "create_blob_Nbkt", 128e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=2,
+            hermes_conf='hermes_server'), "create_blob_Nbkt", 64e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=4,
+            hermes_conf='hermes_server'), "create_blob_Nbkt", 32e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=8,
+            hermes_conf='hermes_server'), "create_blob_Nbkt", 16e3)
 
     def test_hermes_del_bkt(self):
         """
@@ -148,14 +174,18 @@ class LukeTestManager(TestManager):
 
         :return: None
         """
-        self.hermes_api_cmd(self.spawn_info(nprocs=1, api='native'),
-                            "del_bkt", 1, 128e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=2, api='native'),
-                            "del_bkt", 1, 64e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=4, api='native'),
-                            "del_bkt", 1, 32e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=8, api='native'),
-                            "del_bkt", 1, 16e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=1,
+            hermes_conf='hermes_server'), "del_bkt", 1, 128e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=2,
+            hermes_conf='hermes_server'), "del_bkt", 1, 64e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=4,
+            hermes_conf='hermes_server'), "del_bkt", 1, 32e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=8,
+            hermes_conf='hermes_server'), "del_bkt", 1, 16e3)
 
     def test_hermes_del_blobs(self):
         """
@@ -163,14 +193,18 @@ class LukeTestManager(TestManager):
 
         :return: None
         """
-        self.hermes_api_cmd(self.spawn_info(nprocs=1, api='native'),
-                            "del_blobs", 128e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=2, api='native'),
-                            "del_blobs", 64e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=4, api='native'),
-                            "del_blobs", 32e3)
-        self.hermes_api_cmd(self.spawn_info(nprocs=8, api='native'),
-                            "del_blobs", 16e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=1,
+            hermes_conf='hermes_server'), "del_blobs", 128e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=2,
+            hermes_conf='hermes_server'), "del_blobs", 64e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=4,
+            hermes_conf='hermes_server'), "del_blobs", 32e3)
+        self.hermes_api_cmd(self.spawn_info(
+            nprocs=8,
+            hermes_conf='hermes_server'), "del_blobs", 16e3)
 
     """======================================================================"""
     """ IOR Tests (NO HERMES) """
@@ -196,11 +230,17 @@ class LukeTestManager(TestManager):
     """======================================================================"""
     def test_hermes_ior_write(self):
         self.ior_write_cmd(self.spawn_info(
-            nprocs=1, hermes_mode='kScratch', api='posix'), '1m', '4g')
+            nprocs=1,
+            hermes_mode='kScratch',
+            api='posix'), '1m', '4g')
         self.ior_write_cmd(self.spawn_info(
-            nprocs=1, hermes_mode='kScratch', api='mpiio'), '1m', '4g')
+            nprocs=1,
+            hermes_mode='kScratch',
+            api='mpiio'), '1m', '4g')
         self.ior_write_cmd(self.spawn_info(
-            nprocs=1, hermes_mode='kScratch', api='hdf5'), '1m', '4g')
+            nprocs=1,
+            hermes_mode='kScratch',
+            api='hdf5'), '1m', '4g')
 
     def test_hermes_ior_write_read(self):
         pass
