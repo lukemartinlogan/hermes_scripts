@@ -47,7 +47,8 @@ class AresTestManager(TestManager):
     def test_mpi(self):
         Exec('mpirun --version',
              self.spawn_info(
-                 num_nodes=2,
+                 nprocs=2,
+                 ppn=1,
                  hostfile=self.HOSTFILE,
                  hermes_conf='hermes_server_ssd_nvme_ram_mn'))
 
