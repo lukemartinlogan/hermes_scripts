@@ -146,6 +146,7 @@ class TestManager(ABC):
             'HERMES_CLIENT_CONF': self.HERMES_CLIENT_CONF,
             'HERMES_TRAIT_PATH': self.HERMES_TRAIT_PATH,
         }
+        print(env)
 
         # Hermes interceptor paths
         if mode is not None:
