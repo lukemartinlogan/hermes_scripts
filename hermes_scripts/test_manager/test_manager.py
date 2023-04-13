@@ -6,6 +6,7 @@ from jarvis_util.shell.kill import Kill
 from jarvis_util.shell.exec import Exec, ExecInfo
 import time
 import os, sys
+import copy
 from abc import ABC, abstractmethod
 
 
@@ -19,6 +20,15 @@ class SpawnInfo(ExecInfo):
         self.hermes_conf = hermes_conf
         self.hermes_mode = hermes_mode
         self.api = api
+
+    def mod(self, **kwargs):
+        cpy = copy.deepcopy(self)
+        for key, val in kwargs.items():
+            cpy[key] = val
+        return cpy
+
+    def copy(self):
+        return self.mod()
 
 
 class SizeConv:
@@ -198,7 +208,9 @@ class TestManager(ABC):
 
         print("Start daemon")
         self.daemon = Exec(f"{self.CMAKE_BINARY_DIR}/bin/hermes_daemon",
-                           spawn_info,
+                           spawn_info.mod(
+                               nprocs=spawn_info.num_nodes,
+                               ppn=1),
                            collect_output=False,
                            exec_async=True)
         time.sleep(3)
