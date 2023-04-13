@@ -24,7 +24,7 @@ class SpawnInfo(ExecInfo):
     def mod(self, **kwargs):
         cpy = copy.deepcopy(self)
         for key, val in kwargs.items():
-            cpy[key] = val
+            setattr(cpy, key, val)
         return cpy
 
     def copy(self):
