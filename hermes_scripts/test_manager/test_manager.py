@@ -198,7 +198,7 @@ class TestManager(ABC):
         print("Start daemon")
         self.daemon = Exec(f"{self.CMAKE_BINARY_DIR}/bin/hermes_daemon",
                            spawn_info,
-                           collect_output=True,
+                           collect_output=False,
                            exec_async=True)
         time.sleep(3)
         print("Launched")
