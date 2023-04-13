@@ -41,8 +41,18 @@ class AresTestManager(TestManager):
 
         :return: None
         """
+        self.start_daemon(self.spawn_info(hermes_conf='hermes_server'))
+        self.stop_daemon()
+
+    def test_hermes_launch_mn(self):
+        """
+        Test case. Launch the hermes daemon + shut it down.
+
+        :return: None
+        """
         self.start_daemon(self.spawn_info(num_nodes=2,
-                                          hostfile=self.HOSTFILE))
+                                          hostfile=self.HOSTFILE,
+                                          hermes_conf='hermes_server_mn'))
         self.stop_daemon()
 
     def test_hermes_put_get_tiered(self):
@@ -99,19 +109,19 @@ class AresTestManager(TestManager):
 
         :return: None
         """
-        self.hermes_api_cmd(self.spawn_info(1, api='native'), 
+        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'), 
                             "create_bkt", 20e3)
-        self.hermes_api_cmd(self.spawn_info(1, api='native'), 
+        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'), 
                             "create_bkt", 40e3)
-        self.hermes_api_cmd(self.spawn_info(1, api='native'), 
+        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'), 
                             "create_bkt", 80e3)
-        self.hermes_api_cmd(self.spawn_info(1, api='native'), 
+        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'), 
                             "create_bkt", 160e3)
-        self.hermes_api_cmd(self.spawn_info(1, api='native'), 
+        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'), 
                             "create_bkt", 320e3)
-        self.hermes_api_cmd(self.spawn_info(1, api='native'), 
+        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'), 
                             "create_bkt", 640e3)
-        self.hermes_api_cmd(self.spawn_info(1, api='native'), 
+        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'), 
                             "create_bkt", 1280e3)
 
     def test_hermes_get_bucket(self):
@@ -120,19 +130,19 @@ class AresTestManager(TestManager):
 
         :return: None
         """
-        self.hermes_api_cmd(self.spawn_info(1, api='native'),
+        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'),
                             "get_bkt", 20e3)
-        self.hermes_api_cmd(self.spawn_info(1, api='native'),
+        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'),
                             "get_bkt", 40e3)
-        self.hermes_api_cmd(self.spawn_info(1, api='native'),
+        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'),
                             "get_bkt", 80e3)
-        self.hermes_api_cmd(self.spawn_info(1, api='native'),
+        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'),
                             "get_bkt", 160e3)
-        self.hermes_api_cmd(self.spawn_info(1, api='native'),
+        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'),
                             "get_bkt", 320e3)
-        self.hermes_api_cmd(self.spawn_info(1, api='native'),
+        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'),
                             "get_bkt", 640e3)
-        self.hermes_api_cmd(self.spawn_info(1, api='native'),
+        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'),
                             "get_bkt", 1280e3)
 
     def test_hermes_create_bucket_scale(self):
@@ -141,13 +151,13 @@ class AresTestManager(TestManager):
 
         :return: None
         """
-        self.hermes_api_cmd(self.spawn_info(1, api='native'),
+        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'),
                             "create_bkt", 128e3)
-        self.hermes_api_cmd(self.spawn_info(2, api='native'),
+        self.hermes_api_cmd(self.spawn_info(2, hermes_conf='hermes_server'),
                             "create_bkt", 64e3)
-        self.hermes_api_cmd(self.spawn_info(4, api='native'),
+        self.hermes_api_cmd(self.spawn_info(4, hermes_conf='hermes_server'),
                             "create_bkt", 32e3)
-        self.hermes_api_cmd(self.spawn_info(8, api='native'),
+        self.hermes_api_cmd(self.spawn_info(8, hermes_conf='hermes_server'),
                             "create_bkt", 16e3)
 
     def test_hermes_create_blob_1bkt(self):
@@ -157,13 +167,13 @@ class AresTestManager(TestManager):
 
         :return: None
         """
-        self.hermes_api_cmd(self.spawn_info(1, api='native'),
+        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'),
                             "create_blob_1bkt", 128e3)
-        self.hermes_api_cmd(self.spawn_info(2, api='native'),
+        self.hermes_api_cmd(self.spawn_info(2, hermes_conf='hermes_server'),
                             "create_blob_1bkt", 64e3)
-        self.hermes_api_cmd(self.spawn_info(4, api='native'),
+        self.hermes_api_cmd(self.spawn_info(4, hermes_conf='hermes_server'),
                             "create_blob_1bkt", 32e3)
-        self.hermes_api_cmd(self.spawn_info(8, api='native'),
+        self.hermes_api_cmd(self.spawn_info(8, hermes_conf='hermes_server'),
                             "create_blob_1bkt", 16e3)
 
     def test_hermes_create_blob_Nbkt(self):
@@ -172,13 +182,13 @@ class AresTestManager(TestManager):
 
         :return: None
         """
-        self.hermes_api_cmd(self.spawn_info(1, api='native'),
+        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'),
                             "create_blob_Nbkt", 128e3)
-        self.hermes_api_cmd(self.spawn_info(2, api='native'),
+        self.hermes_api_cmd(self.spawn_info(2, hermes_conf='hermes_server'),
                             "create_blob_Nbkt", 64e3)
-        self.hermes_api_cmd(self.spawn_info(4, api='native'),
+        self.hermes_api_cmd(self.spawn_info(4, hermes_conf='hermes_server'),
                             "create_blob_Nbkt", 32e3)
-        self.hermes_api_cmd(self.spawn_info(8, api='native'),
+        self.hermes_api_cmd(self.spawn_info(8, hermes_conf='hermes_server'),
                             "create_blob_Nbkt", 16e3)
 
     def test_hermes_del_bkt(self):
@@ -187,13 +197,13 @@ class AresTestManager(TestManager):
 
         :return: None
         """
-        self.hermes_api_cmd(self.spawn_info(1, api='native'),
+        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'),
                             "del_bkt", 1, 128e3)
-        self.hermes_api_cmd(self.spawn_info(2, api='native'),
+        self.hermes_api_cmd(self.spawn_info(2, hermes_conf='hermes_server'),
                             "del_bkt", 1, 64e3)
-        self.hermes_api_cmd(self.spawn_info(4, api='native'),
+        self.hermes_api_cmd(self.spawn_info(4, hermes_conf='hermes_server'),
                             "del_bkt", 1, 32e3)
-        self.hermes_api_cmd(self.spawn_info(8, api='native'),
+        self.hermes_api_cmd(self.spawn_info(8, hermes_conf='hermes_server'),
                             "del_bkt", 1, 16e3)
 
     def test_hermes_del_blobs(self):
@@ -202,13 +212,13 @@ class AresTestManager(TestManager):
 
         :return: None
         """
-        self.hermes_api_cmd(self.spawn_info(1, api='native'),
+        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'),
                             "del_blobs", 128e3)
-        self.hermes_api_cmd(self.spawn_info(2, api='native'),
+        self.hermes_api_cmd(self.spawn_info(2, hermes_conf='hermes_server'),
                             "del_blobs", 64e3)
-        self.hermes_api_cmd(self.spawn_info(4, api='native'),
+        self.hermes_api_cmd(self.spawn_info(4, hermes_conf='hermes_server'),
                             "del_blobs", 32e3)
-        self.hermes_api_cmd(self.spawn_info(8, api='native'),
+        self.hermes_api_cmd(self.spawn_info(8, hermes_conf='hermes_server'),
                             "del_blobs", 16e3)
 
     """======================================================================"""
@@ -216,32 +226,32 @@ class AresTestManager(TestManager):
     """======================================================================"""
     def test_ram_bw(self):
         count = SizeConv.to_int('16g') / SizeConv.to_int('1m')
-        self.memcpy_test_cmd(self.spawn_info(1, api='native'),
+        self.memcpy_test_cmd(self.spawn_info(1, hermes_conf='hermes_server'),
                              '1m', count)
-        self.memcpy_test_cmd(self.spawn_info(2, api='native'),
+        self.memcpy_test_cmd(self.spawn_info(2, hermes_conf='hermes_server'),
                              '1m', count / 2)
-        self.memcpy_test_cmd(self.spawn_info(4, api='native'),
+        self.memcpy_test_cmd(self.spawn_info(4, hermes_conf='hermes_server'),
                              '1m', count / 4)
-        self.memcpy_test_cmd(self.spawn_info(8, api='native'),
+        self.memcpy_test_cmd(self.spawn_info(8, hermes_conf='hermes_server'),
                              '1m', count / 8)
-        self.memcpy_test_cmd(self.spawn_info(16, api='native'),
+        self.memcpy_test_cmd(self.spawn_info(16, hermes_conf='hermes_server'),
                              '1m', count / 16)
-        self.memcpy_test_cmd(self.spawn_info(32, api='native'),
+        self.memcpy_test_cmd(self.spawn_info(32, hermes_conf='hermes_server'),
                              '1m', count / 32)
 
     def test_ram_latency(self):
         count = SizeConv.to_int('16g') / 4096
-        self.memcpy_test_cmd(self.spawn_info(1, api='native'),
+        self.memcpy_test_cmd(self.spawn_info(1, hermes_conf='hermes_server'),
                              '1m', count)
-        self.memcpy_test_cmd(self.spawn_info(2, api='native'),
+        self.memcpy_test_cmd(self.spawn_info(2, hermes_conf='hermes_server'),
                              '1m', count / 2)
-        self.memcpy_test_cmd(self.spawn_info(4, api='native'),
+        self.memcpy_test_cmd(self.spawn_info(4, hermes_conf='hermes_server'),
                              '1m', count / 4)
-        self.memcpy_test_cmd(self.spawn_info(8, api='native'),
+        self.memcpy_test_cmd(self.spawn_info(8, hermes_conf='hermes_server'),
                              '1m', count / 8)
-        self.memcpy_test_cmd(self.spawn_info(16, api='native'),
+        self.memcpy_test_cmd(self.spawn_info(16, hermes_conf='hermes_server'),
                              '1m', count / 16)
-        self.memcpy_test_cmd(self.spawn_info(32, api='native'),
+        self.memcpy_test_cmd(self.spawn_info(32, hermes_conf='hermes_server'),
                              '1m', count / 32)
 
     def test_ior_backends(self):
