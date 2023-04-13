@@ -2,12 +2,23 @@
 USAGE: luke_test_manager.py [TEST_NAME]
 """
 from jarvis_util.jutil_manager import JutilManager
-from jarvis_util.shell.mpi_exec import MpiExec
 from jarvis_util.shell.kill import Kill
-from jarvis_util.shell.local_exec import LocalExec
+from jarvis_util.shell.exec import Exec, ExecInfo
 import time
 import os, sys
 from abc import ABC, abstractmethod
+
+
+class SpawnInfo(ExecInfo):
+    def __init__(self, nprocs,
+                 ppn=None, num_nodes=None, hostfile=None,
+                 hermes_conf=None, hermes_mode=None,
+                 env=None, api=None):
+        super().__init__(nprocs, ppn=ppn, hostfile=hostfile, env=env)
+        self.num_nodes = num_nodes
+        self.hermes_conf = hermes_conf
+        self.hermes_mode = hermes_mode
+        self.api = api
 
 
 class SizeConv:
@@ -62,10 +73,8 @@ class TestManager(ABC):
         self.CMAKE_SOURCE_DIR = None
         self.CMAKE_BINARY_DIR = None
         self.HERMES_TRAIT_PATH = None
-        self.HERMES_CONF = None
         self.HERMES_CLIENT_CONF = None
-        self.hostfile_path = None
-        self.num_nodes = None
+        self.daemon = None
 
         self.tests_ = {}
         self.devices = {}
@@ -81,6 +90,60 @@ class TestManager(ABC):
     @abstractmethod
     def set_paths(self):
         pass
+
+    def spawn_info(self, nprocs=None, ppn=None, hostfile=None, num_nodes=None,
+                   hermes_conf=None, hermes_mode=None, api=None):
+        # Get the hermes configuration path
+        if hermes_mode is not None and hermes_conf is None:
+            if hermes_conf is None:
+                hermes_conf = os.path.join(self.TEST_MACHINE_DIR,
+                                           'conf', 'hermes_server.yaml')
+            else:
+                hermes_conf = os.path.join(self.TEST_MACHINE_DIR,
+                                           'conf',
+                                           f"{hermes_conf}.yaml")
+
+        # Basic environment variables
+        env = {
+            'PATH': os.getenv('PATH'),
+            'LD_LIBRARY_PATH': os.getenv('LD_LIBRARY_PATH'),
+            'HERMES_CONF': hermes_conf,
+            'HERMES_CLIENT_CONF': self.HERMES_CLIENT_CONF,
+            'HERMES_TRAIT_PATH': self.HERMES_TRAIT_PATH,
+        }
+
+        # Hermes interceptor paths
+        if hermes_mode is not None:
+            if api == 'posix':
+                env['LD_PRELOAD'] = f"{self.CMAKE_BINARY_DIR}/bin" \
+                                    f"/libhermes_posix.so"
+            elif api == 'stdio':
+                env['LD_PRELOAD'] = f"{self.CMAKE_BINARY_DIR}/bin" \
+                                    f"/libhermes_stdio.so"
+            elif api == 'mpiio':
+                env['LD_PRELOAD'] = f"{self.CMAKE_BINARY_DIR}/bin" \
+                                    f"/libhermes_mpiio.so"
+            elif api == 'hdf5':
+                env['LD_PRELOAD'] = f"{self.CMAKE_BINARY_DIR}/bin" \
+                                    f"/libhdf5_hermes_vfd.so"
+                env['HDF5_PLUGIN_PATH'] = f"{self.CMAKE_BINARY_DIR}/bin"
+
+        # Hermes mode
+        if hermes_mode == 'kDefault':
+            env['HERMES_ADAPTER_MODE'] = 'kDefault'
+        if hermes_mode == 'kScratch':
+            env['HERMES_ADAPTER_MODE'] = 'kScratch'
+        if hermes_mode == 'kBypass':
+            env['HERMES_ADAPTER_MODE'] = 'kBypass'
+
+        return SpawnInfo(nprocs=nprocs,
+                         ppn=ppn,
+                         hostfile=hostfile,
+                         num_nodes=num_nodes,
+                         hermes_conf=hermes_conf,
+                         hermes_mode=hermes_mode,
+                         api=api,
+                         env=env)
 
     @abstractmethod
     def set_devices(self):
@@ -119,62 +182,7 @@ class TestManager(ABC):
     """ General Test Helper Functions """
     """======================================================================"""
 
-    def set_hermes_conf(self, name):
-        """
-        Choose the hermes configuration from the "luke" directory
-
-        :param name: the name of the YAML file
-        :return: None
-        """
-        if name is not None:
-            self.HERMES_CONF = os.path.join(self.TEST_MACHINE_DIR,
-                                            'conf', name)
-        else:
-            self.HERMES_CONF = os.path.join(self.TEST_MACHINE_DIR,
-                                            'conf', 'hermes_server.yaml')
-
-    def get_env(self, preload=None, mode=None):
-        """
-        Get the current Hermes environment variables
-        :return: Dict of strings
-        """
-        # Basic environment variables
-        env = {
-            'PATH': os.getenv('PATH'),
-            'LD_LIBRARY_PATH': os.getenv('LD_LIBRARY_PATH'),
-            'HERMES_CONF': self.HERMES_CONF,
-            'HERMES_CLIENT_CONF': self.HERMES_CLIENT_CONF,
-            'HERMES_TRAIT_PATH': self.HERMES_TRAIT_PATH,
-        }
-        print(env)
-
-        # Hermes interceptor paths
-        if mode is not None:
-            if preload == 'posix':
-                env['LD_PRELOAD'] = f"{self.CMAKE_BINARY_DIR}/bin" \
-                                    f"/libhermes_posix.so"
-            elif preload == 'stdio':
-                env['LD_PRELOAD'] = f"{self.CMAKE_BINARY_DIR}/bin" \
-                                    f"/libhermes_stdio.so"
-            elif preload == 'mpiio':
-                env['LD_PRELOAD'] = f"{self.CMAKE_BINARY_DIR}/bin" \
-                                    f"/libhermes_mpiio.so"
-            elif preload == 'hdf5':
-                env['LD_PRELOAD'] = f"{self.CMAKE_BINARY_DIR}/bin" \
-                                    f"/libhdf5_hermes_vfd.so"
-                env['HDF5_PLUGIN_PATH'] = f"{self.CMAKE_BINARY_DIR}/bin"
-
-        # Hermes mode
-        if mode == 'kDefault':
-            env['HERMES_ADAPTER_MODE'] = 'kDefault'
-        if mode == 'kScratch':
-            env['HERMES_ADAPTER_MODE'] = 'kScratch'
-        if mode == 'kBypass':
-            env['HERMES_ADAPTER_MODE'] = 'kBypass'
-
-        return env
-
-    def start_daemon(self, env):
+    def start_daemon(self, spawn_info):
         """
         Helper function. Start the Hermes daemon
 
@@ -184,23 +192,14 @@ class TestManager(ABC):
         Kill("hermes_daemon")
 
         print("Start daemon")
-        if self.num_nodes == None:
-            self.daemon = LocalExec(f"{self.CMAKE_BINARY_DIR}/bin/hermes_daemon",
-                                    env=env,
-                                    collect_output=True,
-                                    exec_async=True)
-        else:
-            self.daemon = MpiExec(f"{self.CMAKE_BINARY_DIR}/bin/hermes_daemon",
-                                  nprocs=self.num_nodes,
-                                  hostfile=self.hostfile_path,
-                                  ppn=1,
-                                  env=env,
-                                  collect_output=False,
-                                  exec_async=True)
+        self.daemon = Exec(f"{self.CMAKE_BINARY_DIR}/bin/hermes_daemon",
+                           spawn_info,
+                           collect_output=True,
+                           exec_async=True)
         time.sleep(3)
         print("Launched")
 
-    def stop_daemon(self, env):
+    def stop_daemon(self):
         """
         Helper function. Stop the Hermes daemon.
 
@@ -208,9 +207,9 @@ class TestManager(ABC):
         :return: None
         """
         print("Stop daemon")
-        LocalExec(f"{self.CMAKE_BINARY_DIR}/bin/finalize_hermes",
-                  collect_output=True,
-                  env=env)
+        Exec(f"{self.CMAKE_BINARY_DIR}/bin/finalize_hermes",
+              SpawnInfo(1),
+              collect_output=True)
         self.daemon.wait()
         print("Stopped daemon")
 
@@ -218,46 +217,35 @@ class TestManager(ABC):
     """ Native API Tests + Commands """
     """======================================================================"""
 
-    def hermes_api_cmd(self, nprocs, mode, *args, **kwargs):
+    def hermes_api_cmd(self, spawn_info, mode, *args):
         """
         Helper function. Run Hermes internal API performance tests.
 
         :return: None
         """
-        if 'hermes_conf' in kwargs:
-            self.set_hermes_conf(kwargs['hermes_conf'])
-        ppn = nprocs
-        if 'ppn' in kwargs:
-            ppn = kwargs['ppn']
-
-        self.start_daemon(self.get_env())
+        self.start_daemon(spawn_info)
         cmd = [
             f"{self.CMAKE_BINARY_DIR}/bin/api_bench",
             mode,
         ]
         cmd += [str(arg) for arg in args]
         cmd = " ".join(cmd)
-        print(f"HERMES_CONF={kwargs['hermes_conf']} {cmd}")
-        MpiExec(cmd,
-                nprocs=nprocs,
-                ppn=None,
-                env=self.get_env())
-        self.stop_daemon(self.get_env())
+        print(f"HERMES_CONF={spawn_info.hermes_conf} {cmd}")
+        Exec(cmd, spawn_info)
+        self.stop_daemon()
 
     """======================================================================"""
     """ IOR Test Commands """
     """======================================================================"""
 
-    def memcpy_test_cmd(self, nprocs, xfer_size, count):
+    def memcpy_test_cmd(self, spawn_info, xfer_size, count):
         cmd = [
             f"{self.CMAKE_BINARY_DIR}/bin/memcpy_bench",
             str(xfer_size),
             str(count)
         ]
         cmd = " ".join(cmd)
-        MpiExec(cmd,
-                nprocs=nprocs,
-                env=self.get_env())
+        Exec(cmd, spawn_info)
 
     def get_ior_backend(self, backend):
         if backend == 'posix':
@@ -268,30 +256,22 @@ class TestManager(ABC):
             return '-a=HDF5'
         return ''
 
-    def ior_write_cmd(self, nprocs, transfer_size,
+    def ior_write_cmd(self, spawn_info, transfer_size,
                       io_size_per_rank,
-                      backend=None,
-                      hermes_mode=None,
-                      hermes_conf=None,
                       dev='nvme'):
         """
         A write-only IOR workload
 
-        :param nprocs: MPI process to spawn
+        :param spawn_info: MPI process to spawn
         :param transfer_size: size of each I/O in IOR (e.g., 16k, 1m, 4g)
         :param io_size_per_rank: Total amount of I/O to do for each rank
-        :param backend: Which backend to use
-        :param hermes_mode: The mode to run Hermes in. None indicates no Hermes.
-        :param hermes_conf: The server config to use for Hermes.
         :param dev: The device to output data to
 
         :return: None
         """
-        self.set_hermes_conf(hermes_conf)
-
         # Start daemon
-        if hermes_mode is not None:
-            self.start_daemon(self.get_env())
+        if spawn_info.hermes_mode is not None:
+            self.start_daemon(spawn_info)
 
         # Run IOR
         cmd = [
@@ -301,41 +281,32 @@ class TestManager(ABC):
             f"-t {transfer_size}",
             f"-b {io_size_per_rank}",
             '-k',   # Keep files after IOR
-            self.get_ior_backend(backend)
+            self.get_ior_backend(spawn_info.api)
         ]
         cmd = " ".join(cmd)
-        MpiExec(cmd,
-                nprocs=nprocs,
-                env=self.get_env(preload=backend, mode=hermes_mode))
+        Exec(cmd, spawn_info)
 
         # Stop daemon
-        if hermes_mode is not None:
-            self.stop_daemon(self.get_env())
+        if spawn_info.hermes_mode is not None:
+            self.stop_daemon()
 
-    def ior_write_read_no_hermes_cmd(self, nprocs, transfer_size,
+    def ior_write_read_no_hermes_cmd(self, spawn_info,
+                                     transfer_size,
                                      io_size_per_rank,
-                                     backend=None,
-                                     hermes_mode=None,
-                                     hermes_conf=None,
                                      dev='nvme'):
         """
         A write-then-read IOR workflow
 
-        :param nprocs: MPI process to spawn
+        :param spawn_info: MPI process to spawn
         :param transfer_size: size of each I/O in IOR (e.g., 16k, 1m, 4g)
         :param io_size_per_rank: Total amount of I/O to do for each rank
-        :param backend: Which backend to use
-        :param hermes_mode: The mode to run Hermes in. None indicates no Hermes.
-        :param hermes_conf: The server config to use for Hermes.
         :param dev: The device to output data to
 
         :return: None
         """
-        self.set_hermes_conf(hermes_conf)
-
         # Start daemon
-        if hermes_mode is not None:
-            self.start_daemon(self.get_env())
+        if spawn_info.hermes_mode is not None:
+            self.start_daemon(spawn_info)
 
         # Run IOR
         cmd = [
@@ -345,13 +316,11 @@ class TestManager(ABC):
             f"-t {transfer_size}",
             f"-b {io_size_per_rank}",
             '-k',
-            self.get_ior_backend(backend)
+            self.get_ior_backend(spawn_info.api)
         ]
         cmd = " ".join(cmd)
-        MpiExec(cmd,
-                nprocs=nprocs,
-                env=self.get_env(preload=backend, mode=hermes_mode))
+        Exec(cmd, spawn_info)
 
         # Stop daemon
-        if hermes_mode is not None:
-            self.stop_daemon(self.get_env())
+        if spawn_info.hermes_mode is not None:
+            self.stop_daemon()

@@ -21,14 +21,9 @@ class AresTestManager(TestManager):
         self.CMAKE_BINARY_DIR = os.path.join(self.CMAKE_SOURCE_DIR,
                                              'build')
         self.HERMES_TRAIT_PATH = os.path.join(self.CMAKE_BINARY_DIR, 'bin')
-        self.HERMES_CONF = os.path.join(self.TEST_MACHINE_DIR,
-                                        'conf',
-                                        'hermes_server_ssd_nvme_ram_mn.yaml')
         self.HERMES_CLIENT_CONF = os.path.join(self.TEST_MACHINE_DIR,
                                                'conf', 'hermes_client.yaml')
-        self.hostfile_path = os.path.join(os.getenv('HOME'),
-                                          'hostfile.txt')
-        self.num_nodes = 2
+        self.HOSTFILE = os.path.join(os.getenv('HOME'), 'hostfile.txt')
 
     def set_devices(self):
         user = getpass.getuser()
@@ -46,7 +41,9 @@ class AresTestManager(TestManager):
 
         :return: None
         """
-        self.start_daemon(self.get_env())
+        self.start_daemon(self.spawn_info(num_nodes=2,
+                                          hostfile=self.HOSTFILE),
+                          self.get_env())
         self.stop_daemon(self.get_env())
 
     def test_hermes_put_get_tiered(self):
