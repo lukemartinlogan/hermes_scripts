@@ -94,7 +94,8 @@ class TestManager(ABC):
     def spawn_info(self, nprocs=None, ppn=None, hostfile=None, num_nodes=None,
                    hermes_conf=None, hermes_mode=None, api=None):
         # Get the hermes configuration path
-        if hermes_mode is not None and hermes_conf is None:
+        use_hermes = hermes_mode is not None or api == 'native'
+        if use_hermes and hermes_conf is None:
             if hermes_conf is None:
                 hermes_conf = os.path.join(self.TEST_MACHINE_DIR,
                                            'conf', 'hermes_server.yaml')
@@ -113,7 +114,7 @@ class TestManager(ABC):
         }
 
         # Hermes interceptor paths
-        if hermes_mode is not None:
+        if use_hermes:
             if api == 'posix':
                 env['LD_PRELOAD'] = f"{self.CMAKE_BINARY_DIR}/bin" \
                                     f"/libhermes_posix.so"
