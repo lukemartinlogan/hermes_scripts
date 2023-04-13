@@ -45,7 +45,7 @@ class AresTestManager(TestManager):
         self.stop_daemon()
 
     def test_mpi(self):
-        Exec('mpirun --version',
+        Exec('fi_info -p sockets',
              self.spawn_info(
                  nprocs=2,
                  ppn=1,
