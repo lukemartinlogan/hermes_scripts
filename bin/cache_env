@@ -11,7 +11,7 @@ if __name__ == '__main__':
     HERMES_SCRIPTS_ROOT = str(pathlib.Path(__file__).parent.parent.resolve())
 
     # Ensure cache exists
-    os.makedirs(f"{HERMES_SCRIPTS_ROOT}/.cache/env.sh")
+    os.makedirs(f"{HERMES_SCRIPTS_ROOT}/.cache", exist_ok=True)
 
     # YAML file
     yaml_dict = {
@@ -22,7 +22,7 @@ if __name__ == '__main__':
 
     # Bash script
     lines = ["#!/bin/bash"]
-    lines += [f"export {key}={val}" for key, val in yaml_dict.values()]
+    lines += [f"export {key}={val}" for key, val in yaml_dict.items()]
     text = "\n".join(lines)
     with open(f"{HERMES_SCRIPTS_ROOT}/.cache/env.sh", 'w') as fp:
         fp.write(text)
