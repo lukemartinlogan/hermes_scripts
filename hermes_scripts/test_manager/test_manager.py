@@ -134,6 +134,7 @@ class TestManager(ABC):
         }
         if use_hermes:
             env.update({
+                'HERMES_LOG_OUT': "/tmp/hermes_log.txt",
                 'HERMES_CONF': hermes_conf,
                 'HERMES_CLIENT_CONF': self.HERMES_CLIENT_CONF,
                 'HERMES_TRAIT_PATH': self.HERMES_TRAIT_PATH,
