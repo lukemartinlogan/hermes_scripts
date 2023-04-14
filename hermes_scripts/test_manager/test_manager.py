@@ -216,7 +216,7 @@ class TestManager(ABC):
         time.sleep(5)
         print("Launched")
 
-    def stop_daemon(self):
+    def stop_daemon(self, spawn_info):
         """
         Helper function. Stop the Hermes daemon.
 
@@ -225,7 +225,7 @@ class TestManager(ABC):
         """
         print("Stop daemon")
         Exec(f"{self.CMAKE_BINARY_DIR}/bin/finalize_hermes",
-              SpawnInfo(1),
+              spawn_info.mod(nprocs=1),
               collect_output=False)
         self.daemon.wait()
         print("Stopped daemon")
@@ -249,7 +249,7 @@ class TestManager(ABC):
         cmd = " ".join(cmd)
         print(f"HERMES_CONF={spawn_info.hermes_conf} {cmd}")
         Exec(cmd, spawn_info)
-        self.stop_daemon()
+        self.stop_daemon(spawn_info)
 
     """======================================================================"""
     """ IOR Test Commands """
@@ -305,7 +305,7 @@ class TestManager(ABC):
 
         # Stop daemon
         if spawn_info.hermes_mode is not None:
-            self.stop_daemon()
+            self.stop_daemon(spawn_info)
 
     def ior_write_read_no_hermes_cmd(self, spawn_info,
                                      transfer_size,
@@ -340,4 +340,4 @@ class TestManager(ABC):
 
         # Stop daemon
         if spawn_info.hermes_mode is not None:
-            self.stop_daemon()
+            self.stop_daemon(spawn_info)

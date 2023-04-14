@@ -38,8 +38,9 @@ class LukeTestManager(TestManager):
 
         :return: None
         """
-        self.start_daemon(self.spawn_info(hermes_conf='hermes_server'))
-        self.stop_daemon()
+        spawn_info = self.spawn_info(hermes_conf='hermes_server')
+        self.start_daemon(spawn_info)
+        self.stop_daemon(spawn_info)
 
     def test_hermes_put_get(self):
         """
