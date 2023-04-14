@@ -90,12 +90,6 @@ class TestManager(ABC):
         self.devices = {}
         self.set_paths()
         self.set_devices()
-
-        # Make all device paths
-        for path in self.devices.values():
-            Exec(f"mkdir -p {path}",
-                 self.spawn_all_nodes())
-
         self.find_tests()
 
     @abstractmethod
@@ -109,6 +103,12 @@ class TestManager(ABC):
     @abstractmethod
     def spawn_all_nodes(self):
         pass
+
+    def test_init(self):
+        # Make all device paths
+        for path in self.devices.values():
+            Exec(f"mkdir -p {path}",
+                 self.spawn_all_nodes())
 
     def spawn_info(self, nprocs=None, ppn=None, hostfile=None, num_nodes=None,
                    hermes_conf=None, hermes_mode=None, api=None):
