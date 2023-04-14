@@ -266,6 +266,13 @@ class AresTestManager(TestManager):
         self.ior_write_cmd(self.spawn_info(8, api='posix'),
                            '1m', '4g', dev='ssd')
 
+    def test_ior_write_mn(self):
+        self.ior_write_cmd(self.spawn_info(8,
+                                           ppn=4,
+                                           hostfile=self.HOSTFILE,
+                                           api='posix'),
+                           '1m', '4g', dev='nvme')
+
     def test_ior_write_read(self):
         pass
 
