@@ -41,6 +41,19 @@ class AresTestManager(TestManager):
     """ Native API Tests """
     """======================================================================"""
 
+    def test_echo(self):
+        """
+        Test case. Launch the hermes daemon + shut it down.
+
+        :return: None
+        """
+        spawn_info = self.spawn_info(hermes_conf='hermes_server')
+        Exec("echo 5",
+             spawn_info=self.spawn_info(nprocs=2, ppn=1,
+                                        hostfile=self.HOSTFILE))
+        self.start_daemon(spawn_info)
+        self.stop_daemon(spawn_info)
+
     def test_hermes_launch(self):
         """
         Test case. Launch the hermes daemon + shut it down.
