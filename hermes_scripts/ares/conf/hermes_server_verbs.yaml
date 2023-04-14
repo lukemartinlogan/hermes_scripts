@@ -37,8 +37,8 @@ devices:
 rpc:
   host_file: "${HOME}/hostfile.txt"
   host_names: []
-  protocol: "ofi+tcp"
-  domain: ""
+  protocol: "ofi+verbs"
+  domain: "mlx5_0"
   port: 8080
   num_threads: 8
 
