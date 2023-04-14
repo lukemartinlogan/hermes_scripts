@@ -213,13 +213,14 @@ class TestManager(ABC):
         :param env: Hermes environment variables
         :return: None
         """
-        Kill("hermes_daemon")
+        dspawn_info = spawn_info.mod(
+            nprocs=spawn_info.num_nodes,
+            ppn=1)
+        Kill("hermes_daemon", dspawn_info)
 
         print("Start daemon")
         self.daemon = Exec(f"{self.CMAKE_BINARY_DIR}/bin/hermes_daemon",
-                           spawn_info.mod(
-                               nprocs=spawn_info.num_nodes,
-                               ppn=1),
+                           dspawn_info,
                            collect_output=False,
                            exec_async=True)
         time.sleep(20)
