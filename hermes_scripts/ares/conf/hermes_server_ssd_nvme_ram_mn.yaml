@@ -37,10 +37,10 @@ devices:
 rpc:
   host_file: "${HOME}/hostfile.txt"
   host_names: []
-  protocol: "ofi+tcp"
+  protocol: "ofi+sockets"
   domain: ""
   port: 8080
-  num_threads: 4
+  num_threads: 8
 
 ### Define properties of the BORG
 buffer_organizer:
