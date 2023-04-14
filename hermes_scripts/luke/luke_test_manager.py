@@ -28,6 +28,9 @@ class LukeTestManager(TestManager):
     def set_devices(self):
         self.devices['nvme'] = '/tmp/test_hermes'
 
+    def spawn_all_nodes(self):
+        return self.spawn_info(nprocs=1, num_nodes=1, hostfile=None)
+
     """======================================================================"""
     """ Native API Tests """
     """======================================================================"""

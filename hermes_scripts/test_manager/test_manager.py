@@ -93,12 +93,21 @@ class TestManager(ABC):
 
         # Make all device paths
         for path in self.devices.values():
-            os.makedirs(path, exist_ok=True)
+            Exec(f"mkdir -p {path}",
+                 self.spawn_all_nodes())
 
         self.find_tests()
 
     @abstractmethod
     def set_paths(self):
+        pass
+
+    @abstractmethod
+    def set_devices(self):
+        pass
+
+    @abstractmethod
+    def spawn_all_nodes(self):
         pass
 
     def spawn_info(self, nprocs=None, ppn=None, hostfile=None, num_nodes=None,
@@ -121,11 +130,14 @@ class TestManager(ABC):
         # Basic environment variables
         env = {
             'PATH': os.getenv('PATH'),
-            'LD_LIBRARY_PATH': os.getenv('LD_LIBRARY_PATH'),
-            'HERMES_CONF': hermes_conf,
-            'HERMES_CLIENT_CONF': self.HERMES_CLIENT_CONF,
-            'HERMES_TRAIT_PATH': self.HERMES_TRAIT_PATH,
+            'LD_LIBRARY_PATH': os.getenv('LD_LIBRARY_PATH')
         }
+        if use_hermes:
+            env.update({
+                'HERMES_CONF': hermes_conf,
+                'HERMES_CLIENT_CONF': self.HERMES_CLIENT_CONF,
+                'HERMES_TRAIT_PATH': self.HERMES_TRAIT_PATH,
+            })
 
         # Hermes interceptor paths
         if use_hermes:
@@ -159,10 +171,6 @@ class TestManager(ABC):
                          hermes_mode=hermes_mode,
                          api=api,
                          env=env)
-
-    @abstractmethod
-    def set_devices(self):
-        pass
 
     def cleanup(self):
         for dir in self.devices.values():

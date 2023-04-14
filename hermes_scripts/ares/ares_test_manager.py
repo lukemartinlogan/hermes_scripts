@@ -31,6 +31,12 @@ class AresTestManager(TestManager):
         self.devices['nvme'] = f"/mnt/nvme/{user}/test_hermes"
         self.devices['pfs'] = f"{os.environ['HOME']}/test_hermes"
 
+    def spawn_all_nodes(self):
+        return self.spawn_info(nprocs=2,
+                               ppn=1,
+                               num_nodes=1,
+                               hostfile=self.HOSTFILE)
+
     """======================================================================"""
     """ Native API Tests """
     """======================================================================"""
