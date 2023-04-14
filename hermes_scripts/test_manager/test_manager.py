@@ -226,7 +226,7 @@ class TestManager(ABC):
         print("Stop daemon")
         Exec(f"{self.CMAKE_BINARY_DIR}/bin/finalize_hermes",
               SpawnInfo(1),
-              collect_output=True)
+              collect_output=False)
         self.daemon.wait()
         print("Stopped daemon")
 
