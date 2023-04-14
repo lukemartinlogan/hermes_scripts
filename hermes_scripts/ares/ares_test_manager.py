@@ -49,8 +49,8 @@ class AresTestManager(TestManager):
         """
         spawn_info = self.spawn_info(hermes_conf='hermes_server')
         Exec("echo 5",
-             spawn_info=self.spawn_info(nprocs=2, ppn=1,
-                                        hostfile=self.HOSTFILE))
+             self.spawn_info(nprocs=2, ppn=1,
+                             hostfile=self.HOSTFILE))
         self.start_daemon(spawn_info)
         self.stop_daemon(spawn_info)
 
