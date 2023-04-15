@@ -112,9 +112,11 @@ class AresTestManager(TestManager):
                 count_pp = int(size_pp / SizeConv.to_int(xfer_size))
                 if count_pp * nprocs > 128000:
                     count_pp = 128000 / nprocs
-                self.hermes_api_cmd(self.spawn_info(nprocs, ppn=max_ppn,
-                                                    hermes_conf=hermes_conf),
-                                    "putget", xfer_size, count_pp)
+                spawn_info = self.spawn_info(nprocs=nprocs,
+                                             ppn=max_ppn,
+                                             hermes_conf=hermes_conf,
+                                             hostfile=self.HOSTFILE)
+                self.hermes_api_cmd(spawn_info, "putget", xfer_size, count_pp)
 
     def test_hermes_create_bucket(self):
         """
