@@ -101,9 +101,7 @@ class AresTestManager(TestManager):
         :return: None
         """
         xfer_sizes = ["1m"]
-        hermes_confs = [#"hermes_server_ssd",
-                        #"hermes_server_ssd_nvme",
-                        "hermes_server_ssd_nvme_ram"]
+        hermes_confs = ["hermes_server_ssd_nvme_ram_mn"]
         nprocs = 24
         max_ppn = 12
         total_size = 40 * (1 << 30)
