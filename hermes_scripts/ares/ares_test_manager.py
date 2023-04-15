@@ -32,10 +32,7 @@ class AresTestManager(TestManager):
         self.devices['pfs'] = f"{os.environ['HOME']}/test_hermes"
 
     def spawn_all_nodes(self):
-        return self.spawn_info(nprocs=2,
-                               ppn=1,
-                               num_nodes=1,
-                               hostfile=self.HOSTFILE)
+        return self.spawn_info(hostfile=self.HOSTFILE)
 
     """======================================================================"""
     """ Native API Tests """
@@ -68,7 +65,6 @@ class AresTestManager(TestManager):
         :return: None
         """
         spawn_info = self.spawn_info(
-            num_nodes=2,
             hostfile=self.HOSTFILE,
             hermes_conf='hermes_server_ssd_nvme_ram_mn')
         self.start_daemon(spawn_info)

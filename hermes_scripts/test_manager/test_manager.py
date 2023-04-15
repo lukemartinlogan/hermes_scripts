@@ -3,34 +3,24 @@ USAGE: luke_test_manager.py [TEST_NAME]
 """
 from jarvis_util.jutil_manager import JutilManager
 from jarvis_util.shell.kill import Kill
-from jarvis_util.shell.exec import Exec, ExecInfo
-from jarvis_util.shell.pssh_exec import PsshExec
-from jarvis_util.shell.mpi_exec import MpiExec
+from jarvis_util.shell.exec import ExecInfo, LocalExecInfo, \
+    PsshExecInfo, MpiExecInfo
+from jarvis_util.shell.exec import ExecType, Exec, LocalExec, PsshExec, MpiExec
 import time
 import os, sys
 import copy
 from abc import ABC, abstractmethod
 
 
-class SpawnInfo(ExecInfo):
+class SpawnInfo(MpiExecInfo):
     def __init__(self, nprocs,
-                 ppn=None, num_nodes=None, hostfile=None,
+                 ppn=None, hostfile=None,
                  hermes_conf=None, hermes_mode=None,
                  env=None, api=None):
-        super().__init__(nprocs, ppn=ppn, hostfile=hostfile, env=env)
-        self.num_nodes = num_nodes
+        super().__init__(nprocs=nprocs, ppn=ppn, hostfile=hostfile, env=env)
         self.hermes_conf = hermes_conf
         self.hermes_mode = hermes_mode
         self.api = api
-
-    def mod(self, **kwargs):
-        cpy = copy.deepcopy(self)
-        for key, val in kwargs.items():
-            setattr(cpy, key, val)
-        return cpy
-
-    def copy(self):
-        return self.mod()
 
 
 class SizeConv:
@@ -110,9 +100,10 @@ class TestManager(ABC):
         # Make all device paths
         spawn_info = self.spawn_all_nodes()
         for path in self.devices.values():
-            PsshExec(f"mkdir -p {path}", hostfile=spawn_info.hostfile)
+            Exec(f"mkdir -p {path}",
+                 PsshExecInfo(hostfile=spawn_info.hostfile))
 
-    def spawn_info(self, nprocs=None, ppn=None, hostfile=None, num_nodes=None,
+    def spawn_info(self, nprocs=None, ppn=None, hostfile=None,
                    hermes_conf=None, hermes_mode=None, api=None):
         # Whether to deploy hermes
         use_hermes = hermes_mode is not None \
@@ -169,7 +160,6 @@ class TestManager(ABC):
         return SpawnInfo(nprocs=nprocs,
                          ppn=ppn,
                          hostfile=hostfile,
-                         num_nodes=num_nodes,
                          hermes_conf=hermes_conf,
                          hermes_mode=hermes_mode,
                          api=api,
@@ -218,10 +208,11 @@ class TestManager(ABC):
         Kill("hermes_daemon", spawn_info.hostfile)
 
         print("Start daemon")
-        self.daemon = PsshExec(f"{self.CMAKE_BINARY_DIR}/bin/hermes_daemon",
-                           hostfile=spawn_info.hostfile,
-                           collect_output=False,
-                           exec_async=True)
+        self.daemon = Exec(f"{self.CMAKE_BINARY_DIR}/bin/hermes_daemon",
+                           PsshExecInfo(
+                               hostfile=spawn_info.hostfile,
+                               collect_output=False,
+                               exec_async=True))
         time.sleep(20)
         print("Launched")
 
@@ -234,8 +225,9 @@ class TestManager(ABC):
         """
         print("Stop daemon")
         Exec(f"{self.CMAKE_BINARY_DIR}/bin/finalize_hermes",
-             spawn_info.mod(nprocs=1),
-             collect_output=False)
+             PsshExecInfo(
+                 hostfile=spawn_info.hostfile,
+                 collect_output=False))
         self.daemon.wait()
         print("Stopped daemon")
 
@@ -243,7 +235,7 @@ class TestManager(ABC):
     """ Native API Tests + Commands """
     """======================================================================"""
 
-    def hermes_api_cmd(self, spawn_info, mode, *args):
+    def hermes_api_cmd(self, spawn_info, test_case, *args):
         """
         Helper function. Run Hermes internal API performance tests.
 
@@ -252,12 +244,12 @@ class TestManager(ABC):
         self.start_daemon(spawn_info)
         cmd = [
             f"{self.CMAKE_BINARY_DIR}/bin/api_bench",
-            mode,
+            test_case,
         ]
         cmd += [str(arg) for arg in args]
         cmd = " ".join(cmd)
         print(f"HERMES_CONF={spawn_info.hermes_conf} {cmd}")
-        MpiExec(cmd, spawn_info)
+        Exec(cmd, spawn_info)
         self.stop_daemon(spawn_info)
 
     """======================================================================"""
