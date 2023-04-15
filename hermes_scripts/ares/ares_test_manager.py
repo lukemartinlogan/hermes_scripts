@@ -139,6 +139,23 @@ class AresTestManager(TestManager):
         self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'), 
                             "create_bkt", 1280e3)
 
+    def test_hermes_create_bucket_mn(self):
+        """
+        Test case. Test performance of creating a bucket multiple nodes.
+
+        :return: None
+        """
+        nprocs = [16, 32]
+        counts = [32e3, 64e3, 128e3, 256e3, 512e3]
+        for nproc in nprocs:
+            for count in counts:
+                count /= nproc
+                spawn_info = self.spawn_info(
+                    nprocs=nproc,
+                    ppn=16,
+                    hermes_conf="hermes_server_ssd_nvme_ram_mn.yaml")
+                self.hermes_api_cmd(spawn_info, "create_bkt", count)
+
     def test_hermes_get_bucket(self):
         """
         Test case. Test performance of PUT and GET operations in Hermes.
