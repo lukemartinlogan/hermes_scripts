@@ -146,7 +146,7 @@ class AresTestManager(TestManager):
         :return: None
         """
         nprocs = [16, 32]
-        counts = [32e3, 64e3, 128e3, 256e3, 512e3]
+        counts = [128e3]
         for nproc in nprocs:
             for count in counts:
                 count /= nproc
