@@ -4,6 +4,8 @@ USAGE: luke_test_manager.py [TEST_NAME]
 from jarvis_util.jutil_manager import JutilManager
 from jarvis_util.shell.kill import Kill
 from jarvis_util.shell.exec import Exec, ExecInfo
+from jarvis_util.shell.pssh_exec import PsshExec
+from jarvis_util.shell.mpi_exec import MpiExec
 import time
 import os, sys
 import copy
@@ -106,9 +108,9 @@ class TestManager(ABC):
 
     def test_init(self):
         # Make all device paths
+        spawn_info = self.spawn_all_nodes()
         for path in self.devices.values():
-            Exec(f"mkdir -p {path}",
-                 self.spawn_all_nodes())
+            PsshExec(f"mkdir -p {path}", hostfile=spawn_info.hostfile)
 
     def spawn_info(self, nprocs=None, ppn=None, hostfile=None, num_nodes=None,
                    hermes_conf=None, hermes_mode=None, api=None):
@@ -219,8 +221,8 @@ class TestManager(ABC):
         Kill("hermes_daemon", dspawn_info)
 
         print("Start daemon")
-        self.daemon = Exec(f"{self.CMAKE_BINARY_DIR}/bin/hermes_daemon",
-                           dspawn_info,
+        self.daemon = PsshExec(f"{self.CMAKE_BINARY_DIR}/bin/hermes_daemon",
+                           hostfile=dspawn_info.hostfile,
                            collect_output=False,
                            exec_async=True)
         time.sleep(20)
@@ -258,7 +260,7 @@ class TestManager(ABC):
         cmd += [str(arg) for arg in args]
         cmd = " ".join(cmd)
         print(f"HERMES_CONF={spawn_info.hermes_conf} {cmd}")
-        Exec(cmd, spawn_info)
+        MpiExec(cmd, spawn_info)
         self.stop_daemon(spawn_info)
 
     """======================================================================"""
