@@ -3,12 +3,13 @@ USAGE: luke_test_manager.py [TEST_NAME]
 """
 from jarvis_util.jutil_manager import JutilManager
 from jarvis_util.shell.kill import Kill
-from jarvis_util.shell.exec import ExecInfo, LocalExecInfo, \
-    PsshExecInfo, MpiExecInfo
-from jarvis_util.shell.exec import ExecType, Exec, LocalExec, PsshExec, MpiExec
+from jarvis_util.shell.exec_info import ExecType, ExecInfo
+from jarvis_util.shell.local_exec import LocalExecInfo
+from jarvis_util.shell.mpi_exec import MpiExecInfo
+from jarvis_util.shell.pssh_exec import PsshExecInfo
+from jarvis_util.shell.exec import Exec
 import time
 import os, sys
-import copy
 from abc import ABC, abstractmethod
 
 
