@@ -206,7 +206,10 @@ class TestManager(ABC):
         :param env: Hermes environment variables
         :return: None
         """
-        Kill("hermes_daemon", spawn_info.hostfile)
+        Kill("hermes_daemon",
+             PsshExecInfo(
+                 hostfile=spawn_info.hostfile,
+                 collect_output=False))
 
         print("Start daemon")
         self.daemon = Exec(f"{self.CMAKE_BINARY_DIR}/bin/hermes_daemon",
