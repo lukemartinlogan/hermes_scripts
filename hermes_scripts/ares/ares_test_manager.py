@@ -153,6 +153,7 @@ class AresTestManager(TestManager):
                 spawn_info = self.spawn_info(
                     nprocs=nproc,
                     ppn=16,
+                    hostfile=self.HOSTFILE,
                     hermes_conf="hermes_server_ssd_nvme_ram_mn")
                 self.hermes_api_cmd(spawn_info, "create_bkt", count)
 
