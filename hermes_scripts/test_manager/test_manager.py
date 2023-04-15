@@ -230,8 +230,7 @@ class TestManager(ABC):
         """
         print("Stop daemon")
         Exec(f"{self.CMAKE_BINARY_DIR}/bin/finalize_hermes",
-             PsshExecInfo(
-                 hostfile=spawn_info.hostfile,
+             LocalExecInfo(
                  env=spawn_info.env,
                  collect_output=False))
         self.daemon.wait()
