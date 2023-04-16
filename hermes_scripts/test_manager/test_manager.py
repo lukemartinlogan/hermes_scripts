@@ -228,6 +228,7 @@ class TestManager(ABC):
                                hostfile=spawn_info.hostfile,
                                env=spawn_info.env,
                                collect_output=True,
+                               hide_output=False,
                                exec_async=True))
         time.sleep(10)
         print("Launched")
