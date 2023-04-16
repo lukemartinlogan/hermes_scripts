@@ -68,7 +68,7 @@ class TestManager(ABC):
         Initialize test manager
         """
         jutil = JutilManager.get_instance()
-        jutil.collect_output = False
+        jutil.collect_output = True
         jutil.hide_output = False
         self.TEST_MACHINE_DIR = test_machine_dir
         self.HERMES_SCRIPTS_ROOT = hermes_scripts_root
@@ -227,7 +227,7 @@ class TestManager(ABC):
                            PsshExecInfo(
                                hostfile=spawn_info.hostfile,
                                env=spawn_info.env,
-                               collect_output=False,
+                               collect_output=True,
                                exec_async=True))
         time.sleep(10)
         print("Launched")
@@ -243,7 +243,7 @@ class TestManager(ABC):
         Exec(f"{self.CMAKE_BINARY_DIR}/bin/finalize_hermes",
              LocalExecInfo(
                  env=spawn_info.env,
-                 collect_output=False))
+                 collect_output=True))
         self.daemon.wait()
         print("Stopped daemon")
 
