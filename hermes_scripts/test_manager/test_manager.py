@@ -107,7 +107,7 @@ class TestManager(ABC):
         # Make all device paths
         spawn_info = self.spawn_all_nodes()
         for count in range(1, min(len(spawn_info.hostfile), 5)):
-            print(f"TEST {count}")
+            print(f"TEST {count}: {spawn_info.hostfile.subset(count)[0:count]}")
             Exec(f"hostname",
                  PsshExecInfo(hostfile=spawn_info.hostfile.subset(count)))
 
