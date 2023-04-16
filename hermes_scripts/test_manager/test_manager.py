@@ -109,7 +109,7 @@ class TestManager(ABC):
         for count in range(1, min(len(spawn_info.hostfile), 5)):
             print(f"TEST {count}")
             Exec(f"hostname",
-                 PsshExecInfo(hostfile=spawn_info.hostfile.sub(count)))
+                 PsshExecInfo(hostfile=spawn_info.hostfile.subset(count)))
 
 
     def spawn_info(self, nprocs=None, ppn=None, hostfile=None,
