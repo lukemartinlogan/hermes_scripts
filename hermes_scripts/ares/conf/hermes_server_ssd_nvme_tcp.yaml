@@ -2,16 +2,6 @@
 
 ### Define properties of the storage devices
 devices:
-  ram:
-    mount_point: ""
-    capacity: 20GB  # Ares has 48GB total
-    block_size: 4KB
-    slab_sizes: [ 4KB, 16KB, 64KB, 1MB ]
-    bandwidth: 6000MBps
-    latency: 15us
-    is_shared_device: false
-    borg_capacity_thresh: [0.0, 1.0]
-
   nvme:
     mount_point: "/mnt/nvme/${USER}/test_hermes"
     capacity: 150GB # NVMe has 238GB total
@@ -35,12 +25,12 @@ devices:
 
 ### Define properties of RPCs
 rpc:
-  host_file: ""
-  host_names: ["localhost"]
-  protocol: "ofi+sockets"
+  host_file: "${HOME}/hostfile.txt"
+  host_names: []
+  protocol: "ofi+tcp"
   domain: ""
   port: 8080
-  num_threads: 4
+  num_threads: 8
 
 ### Define properties of the BORG
 buffer_organizer:

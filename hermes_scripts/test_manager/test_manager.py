@@ -14,11 +14,9 @@ from abc import ABC, abstractmethod
 
 
 class SpawnInfo(MpiExecInfo):
-    def __init__(self, nprocs,
-                 ppn=None, hostfile=None,
-                 hermes_conf=None, hermes_mode=None,
-                 env=None, api=None):
-        super().__init__(nprocs=nprocs, ppn=ppn, hostfile=hostfile, env=env)
+    def __init__(self, nprocs, hermes_conf=None, hermes_mode=None, api=None,
+                 **kwargs):
+        super().__init__(nprocs=nprocs, **kwargs)
         self.hermes_conf = hermes_conf
         self.hermes_mode = hermes_mode
         self.api = api
@@ -71,6 +69,7 @@ class TestManager(ABC):
         """
         jutil = JutilManager.get_instance()
         jutil.collect_output = False
+        jutil.hide_output = False
         self.TEST_MACHINE_DIR = test_machine_dir
         self.HERMES_SCRIPTS_ROOT = hermes_scripts_root
         self.CMAKE_SOURCE_DIR = None
@@ -105,7 +104,8 @@ class TestManager(ABC):
                  PsshExecInfo(hostfile=spawn_info.hostfile))
 
     def spawn_info(self, nprocs=None, ppn=None, hostfile=None,
-                   hermes_conf=None, hermes_mode=None, api=None):
+                   hermes_conf=None, hermes_mode=None, api=None,
+                   file_output=None):
         # Whether to deploy hermes
         use_hermes = hermes_mode is not None \
                      or api == 'native' \
@@ -163,6 +163,7 @@ class TestManager(ABC):
                          hostfile=hostfile,
                          hermes_conf=hermes_conf,
                          hermes_mode=hermes_mode,
+                         file_output=file_output,
                          api=api,
                          env=env)
 

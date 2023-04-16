@@ -4,6 +4,8 @@ USAGE: luke_test_manager.py [TEST_NAME]
 from jarvis_util.jutil_manager import JutilManager
 from jarvis_util.shell.mpi_exec import MpiExec
 from jarvis_util.shell.kill import Kill
+import itertools
+from jarvis_util.util.hostfile import Hostfile
 from jarvis_util.shell.exec import Exec
 from hermes_scripts.test_manager.test_manager import TestManager, SizeConv
 import time
@@ -23,7 +25,11 @@ class AresTestManager(TestManager):
         self.HERMES_TRAIT_PATH = os.path.join(self.CMAKE_BINARY_DIR, 'bin')
         self.HERMES_CLIENT_CONF = os.path.join(self.TEST_MACHINE_DIR,
                                                'conf', 'hermes_client.yaml')
-        self.HOSTFILE = os.path.join(os.getenv('HOME'), 'hostfile.txt')
+        self.HOSTFILE = Hostfile(os.path.join(
+            os.getenv('HOME'), 'hostfile.txt'))
+        self.TEST_DIR = os.path.join(os.getenv('HOME'),
+                                     f"hermes_outputs_{time.time()}")
+        os.makedirs(self.TEST_DIR)
 
     def set_devices(self):
         user = getpass.getuser()
@@ -76,47 +82,34 @@ class AresTestManager(TestManager):
 
         :return: None
         """
-        xfer_sizes = ["4k", "1m"]
-        hermes_confs = [#"hermes_server_ssd",
-                        #"hermes_server_ssd_nvme",
-                        "hermes_server_ssd_nvme_ram"]
-        nprocs = 12
-        total_size = 20 * (1 << 30)
-        size_pp = total_size / nprocs
+        xfer_size_set = ["4k", "64k", "1m"]
+        hermes_conf_set = ["hermes_server_ssd_tcp",
+                           "hermes_server_ssd_nvme_tcp",
+                           "hermes_server_ssd_nvme_ram_tcp"]
+        num_nodes_set = [1, 2, 3, 4]
+        ppn_set = [1, 2, 4, 8, 16, 32, 48]
+        size_per_node = {
+            '4k': SizeConv.to_int('500m'),
+            '64k': SizeConv.to_int('6g'),
+            '1m': SizeConv.to_int('40g'),
+        }
+        combos = itertools.product(xfer_size_set, hermes_conf_set,
+                                   num_nodes_set, ppn_set)
 
-        for xfer_size in xfer_sizes:
-            for hermes_conf in hermes_confs:
-                count_pp = int(size_pp / SizeConv.to_int(xfer_size))
-                if count_pp * nprocs > 128000:
-                    count_pp = 128000 / nprocs
-                self.hermes_api_cmd(
-                    self.spawn_info(nprocs, hermes_conf=hermes_conf),
-                    "putget", xfer_size, count_pp)
-
-    def test_hermes_put_get_scale(self):
-        """
-        Test case. Test performance of PUT and GET operations in Hermes.
-        Vary number of processes and nodes
-
-        :return: None
-        """
-        xfer_sizes = ["1m"]
-        hermes_confs = ["hermes_server_ssd_nvme_ram_mn"]
-        nprocs = 24
-        max_ppn = 12
-        total_size = 40 * (1 << 30)
-        size_pp = total_size / nprocs
-
-        for xfer_size in xfer_sizes:
-            for hermes_conf in hermes_confs:
-                count_pp = int(size_pp / SizeConv.to_int(xfer_size))
-                if count_pp * nprocs > 128000:
-                    count_pp = 128000 / nprocs
-                spawn_info = self.spawn_info(nprocs=nprocs,
-                                             ppn=max_ppn,
-                                             hermes_conf=hermes_conf,
-                                             hostfile=self.HOSTFILE)
-                self.hermes_api_cmd(spawn_info, "putget", xfer_size, count_pp)
+        for xfer_size, hermes_conf, num_nodes, ppn in combos:
+            size_pp = size_per_node[xfer_size] / ppn
+            xfer_size = SizeConv.to_int(xfer_size)
+            count_pp = size_pp / xfer_size
+            nprocs = num_nodes * ppn
+            test_name = f"hermes_put_get_tiered_" \
+                        f"{xfer_size}_{hermes_conf}_{num_nodes}_{ppn}"
+            self.hermes_api_cmd(
+                self.spawn_info(nprocs=nprocs,
+                                ppn=ppn,
+                                hostfile=self.HOSTFILE.subset(num_nodes),
+                                hermes_conf=hermes_conf,
+                                file_output=f"{self.TEST_DIR}/{test_name}"),
+                "putget", xfer_size, count_pp)
 
     def test_hermes_create_bucket(self):
         """
@@ -292,16 +285,22 @@ class AresTestManager(TestManager):
         self.ior_write_cmd(self.spawn_info(1, api='mpiio'), '1m', '1g')
         self.ior_write_cmd(self.spawn_info(1, api='hdf5'), '1m', '1g')
 
-    def test_ior_write(self):
-        self.ior_write_cmd(self.spawn_info(8, api='posix'),
-                           '1m', '4g', dev='ssd')
+    def test_device_bw(self):
+        nprocs = [1, 2, 4, 8, 16, 32, 48]
+        devs = ['ssd', 'nvme', 'ram']
+        for nproc in nprocs:
+            for dev in devs:
+                spawn_info = self.spawn_info(nproc, api='posix')
+                self.ior_write_cmd(spawn_info,
+                                   '1m', '40g', dev=dev)
+        self.test_ram_bw()
 
     def test_ior_write_mn(self):
         self.ior_write_cmd(self.spawn_info(8,
                                            ppn=4,
                                            hostfile=self.HOSTFILE,
                                            api='posix'),
-                           '1m', '4g', dev='nvme')
+                           '1m', '80g', dev='nvme')
 
     def test_ior_write_read(self):
         pass
