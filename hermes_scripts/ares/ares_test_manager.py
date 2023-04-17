@@ -134,7 +134,7 @@ class AresTestManager(TestManager):
             xfer_size = SizeConv.to_int(xfer_size)
             count_pp = size_pp / xfer_size
             nprocs = num_nodes * ppn
-            test_name = f"test_hermes_put_get_tiered_" \
+            test_name = f"test_hermes_put_get_tiered_mn_" \
                         f"{xfer_size}_{hermes_conf}_{num_nodes}_{ppn}"
             self.hermes_api_cmd(
                 self.spawn_info(nprocs=nprocs,
