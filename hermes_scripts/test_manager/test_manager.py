@@ -213,7 +213,6 @@ class TestManager(ABC):
 
     def test_kill(self):
         print("BEGIN KILL")
-        print(self.spawn_all_nodes().hostfile.hosts)
         Kill("hermes_daemon",
              PsshExecInfo(
                  hostfile=self.spawn_all_nodes().hostfile,
@@ -222,12 +221,11 @@ class TestManager(ABC):
 
     def test_is_launched(self):
         print("BEGIN LAUNCH TEST")
-        print(self.spawn_all_nodes().hostfile.hosts)
-        Exec("hostname && ps -ef | grep hermes_daemon",
+        Exec("`hostname && ps -ef | grep hermes_daemon`",
              PsshExecInfo(
                  hostfile=self.spawn_all_nodes().hostfile,
                  collect_output=False))
-        print("END KILL")
+        print("END LAUNCH TEST")
 
     def start_daemon(self, spawn_info):
         """
