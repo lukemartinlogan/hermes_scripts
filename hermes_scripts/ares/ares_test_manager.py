@@ -349,9 +349,12 @@ class AresTestManager(TestManager):
         total_size = ['10g', '20g', '40g']
         test_cases = itertools.product(nprocs_set, dev_set, total_size)
         for nprocs, dev, total_size in test_cases:
+            test_name = f"test_device_bw_{dev}_{nprocs}_{total_size}"
+            test_out = f"{self.TEST_DIR}/{test_name}"
             spawn_info = self.spawn_info(nprocs=nprocs,
                                          ppn=nprocs,
                                          hostfile=self.hostfiles[1],
+                                         file_output=test_out,
                                          api='posix')
             total_size = SizeConv.to_int(total_size)
             size_pp = total_size / nprocs
