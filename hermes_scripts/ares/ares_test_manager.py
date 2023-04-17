@@ -65,10 +65,10 @@ class AresTestManager(TestManager):
 
         :return: None
         """
-        for hostfile in [self.hostfiles[0], self.hostfiles[-1]]:
+        for hostfile in [self.hostfiles[-1]]:
             spawn_info = self.spawn_info(
                 hostfile=hostfile,
-                hermes_conf='hermes_server_ssd_nvme_ram')
+                hermes_conf='hermes_server_ssd_nvme_ram_tcp')
             self.start_daemon(spawn_info)
             self.stop_daemon(spawn_info)
 
