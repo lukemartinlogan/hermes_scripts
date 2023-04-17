@@ -113,78 +113,53 @@ class AresTestManager(TestManager):
 
     def test_hermes_create_bucket(self):
         """
-        Test case. Test performance of PUT and GET operations in Hermes.
+        Test case. Test performance of creating buckets at scale.
 
         :return: None
         """
-        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'), 
-                            "create_bkt", 20e3)
-        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'), 
-                            "create_bkt", 40e3)
-        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'), 
-                            "create_bkt", 80e3)
-        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'), 
-                            "create_bkt", 160e3)
-        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'), 
-                            "create_bkt", 320e3)
-        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'), 
-                            "create_bkt", 640e3)
-        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'), 
-                            "create_bkt", 1280e3)
-
-    def test_hermes_create_bucket_mn(self):
-        """
-        Test case. Test performance of creating a bucket multiple nodes.
-
-        :return: None
-        """
-        nprocs = [16, 32]
-        counts = [128e3]
-        for nproc in nprocs:
-            for count in counts:
-                count /= nproc
-                spawn_info = self.spawn_info(
-                    nprocs=nproc,
-                    ppn=16,
-                    hostfile=self.HOSTFILE,
-                    hermes_conf="hermes_server_ssd_nvme_ram_mn")
-                self.hermes_api_cmd(spawn_info, "create_bkt", count)
+        count_pn_set = [20e3, 40e3, 80e3, 160e3, 320e3, 640e3]
+        hermes_conf_set = ["hermes_server_ssd_nvme_ram_tcp"]
+        num_nodes_set = [1, 2, 3, 4]
+        ppn_set = [1, 2, 4, 8, 16, 32, 48]
+        combos = itertools.product(count_pn_set, hermes_conf_set,
+                                   num_nodes_set, ppn_set)
+        for count_pn, hermes_conf, num_nodes, ppn in combos:
+            count_pp = int(count_pn / ppn)
+            nprocs = num_nodes * ppn
+            test_name = f"test_hermes_create_bucket_" \
+                        f"{count_pn}_{hermes_conf}_{num_nodes}_{ppn}"
+            self.hermes_api_cmd(
+                self.spawn_info(nprocs=nprocs,
+                                ppn=ppn,
+                                hostfile=self.HOSTFILE.subset(num_nodes),
+                                hermes_conf=hermes_conf,
+                                file_output=f"{self.TEST_DIR}/{test_name}"),
+                "create_bkt", count_pp)
 
     def test_hermes_get_bucket(self):
         """
-        Test case. Test performance of PUT and GET operations in Hermes.
+        Test case. Test getting buckets at scale.
 
         :return: None
         """
-        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'),
-                            "get_bkt", 20e3)
-        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'),
-                            "get_bkt", 40e3)
-        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'),
-                            "get_bkt", 80e3)
-        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'),
-                            "get_bkt", 160e3)
-        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'),
-                            "get_bkt", 320e3)
-        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'),
-                            "get_bkt", 640e3)
-        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'),
-                            "get_bkt", 1280e3)
-
-    def test_hermes_create_bucket_scale(self):
-        """
-        Test case. Test performance of creating a bucket (scaling).
-
-        :return: None
-        """
-        self.hermes_api_cmd(self.spawn_info(1, hermes_conf='hermes_server'),
-                            "create_bkt", 128e3)
-        self.hermes_api_cmd(self.spawn_info(2, hermes_conf='hermes_server'),
-                            "create_bkt", 64e3)
-        self.hermes_api_cmd(self.spawn_info(4, hermes_conf='hermes_server'),
-                            "create_bkt", 32e3)
-        self.hermes_api_cmd(self.spawn_info(8, hermes_conf='hermes_server'),
-                            "create_bkt", 16e3)
+        count_pn_set = [20e3, 40e3, 80e3, 160e3, 320e3, 640e3]
+        hermes_conf_set = ["hermes_server_ssd_nvme_ram_tcp"]
+        num_nodes_set = [1, 2, 3, 4]
+        ppn_set = [1, 2, 4, 8, 16, 32, 48]
+        combos = itertools.product(count_pn_set, hermes_conf_set,
+                                   num_nodes_set, ppn_set)
+        for count_pn, hermes_conf, num_nodes, ppn in combos:
+            count_pp = int(count_pn / ppn)
+            nprocs = num_nodes * ppn
+            test_name = f"test_hermes_create_bucket_" \
+                        f"{count_pn}_{hermes_conf}_{num_nodes}_{ppn}"
+            self.hermes_api_cmd(
+                self.spawn_info(nprocs=nprocs,
+                                ppn=ppn,
+                                hostfile=self.HOSTFILE.subset(num_nodes),
+                                hermes_conf=hermes_conf,
+                                file_output=f"{self.TEST_DIR}/{test_name}"),
+                "get_bkt", count_pp)
 
     def test_hermes_create_blob_1bkt(self):
         """
