@@ -213,6 +213,7 @@ class TestManager(ABC):
 
     def test_kill(self):
         print("BEGIN KILL")
+        print(self.spawn_all_nodes().hostfile.hosts)
         Kill("hermes_daemon",
              PsshExecInfo(
                  hostfile=self.spawn_all_nodes().hostfile,
