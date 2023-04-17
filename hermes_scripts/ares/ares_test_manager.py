@@ -157,7 +157,7 @@ class AresTestManager(TestManager):
                                 file_output=f"{self.TEST_DIR}/{test_name}"),
                 "create_bkt", count_pp)
 
-    def test_hermes_get_bucket(self):
+    def test_hermes_get_bucket_count(self):
         """
         Test case. Test getting buckets at scale.
 
@@ -166,13 +166,38 @@ class AresTestManager(TestManager):
         count_pn_set = [20e3, 40e3, 80e3, 160e3, 320e3, 640e3]
         hermes_conf_set = ["hermes_server_ssd_nvme_ram_tcp"]
         num_nodes_set = [1, 2, 3, 4]
+        ppn_set = [1]
+        combos = itertools.product(count_pn_set, hermes_conf_set,
+                                   num_nodes_set, ppn_set)
+        for count_pn, hermes_conf, num_nodes, ppn in combos:
+            count_pp = int(count_pn / ppn)
+            nprocs = num_nodes * ppn
+            test_name = f"test_hermes_get_bucket_count_" \
+                        f"{count_pn}_{hermes_conf}_{num_nodes}_{ppn}"
+            self.hermes_api_cmd(
+                self.spawn_info(nprocs=nprocs,
+                                ppn=ppn,
+                                hostfile=self.hostfiles[num_nodes],
+                                hermes_conf=hermes_conf,
+                                file_output=f"{self.TEST_DIR}/{test_name}"),
+                "get_bkt", count_pp)
+
+    def test_hermes_get_bucket(self):
+        """
+        Test case. Test getting buckets at scale.
+
+        :return: None
+        """
+        count_pn_set = [160e3]
+        hermes_conf_set = ["hermes_server_ssd_nvme_ram_tcp"]
+        num_nodes_set = [1, 2, 3, 4]
         ppn_set = [1, 2, 4, 8, 16, 32, 48]
         combos = itertools.product(count_pn_set, hermes_conf_set,
                                    num_nodes_set, ppn_set)
         for count_pn, hermes_conf, num_nodes, ppn in combos:
             count_pp = int(count_pn / ppn)
             nprocs = num_nodes * ppn
-            test_name = f"test_hermes_create_bucket_" \
+            test_name = f"test_hermes_get_bucket_" \
                         f"{count_pn}_{hermes_conf}_{num_nodes}_{ppn}"
             self.hermes_api_cmd(
                 self.spawn_info(nprocs=nprocs,
