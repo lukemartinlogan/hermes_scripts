@@ -25,11 +25,16 @@ class AresTestManager(TestManager):
         self.HERMES_TRAIT_PATH = os.path.join(self.CMAKE_BINARY_DIR, 'bin')
         self.HERMES_CLIENT_CONF = os.path.join(self.TEST_MACHINE_DIR,
                                                'conf', 'hermes_client.yaml')
+        self.HOSTFILE_DIR = os.path.join(os.getenv('HOME'), 'hostfiles')
         self.HOSTFILE = Hostfile(os.path.join(
             os.getenv('HOME'), 'hostfile.txt'))
         self.TEST_DIR = os.path.join(os.getenv('HOME'),
                                      f"hermes_outputs")
         os.makedirs(self.TEST_DIR, exist_ok=True)
+        os.makedirs(self.HOSTFILE_DIR, exist_ok=True)
+        self.hostfiles = [self.HOSTFILE.subset(count).save(
+                          f"{self.HOSTFILE_DIR}/hostfile_{count}.txt")
+                          for count in range(0, len(self.HOSTFILE) + 1)]
 
     def set_devices(self):
         user = getpass.getuser()
@@ -62,7 +67,7 @@ class AresTestManager(TestManager):
         """
         for count in range(1, len(self.HOSTFILE) + 1):
             spawn_info = self.spawn_info(
-                hostfile=self.HOSTFILE.subset(count),
+                hostfile=self.hostfiles[count],
                 hermes_conf='hermes_server_ssd_nvme_ram_mn')
             self.start_daemon(spawn_info)
             self.stop_daemon(spawn_info)
@@ -97,7 +102,7 @@ class AresTestManager(TestManager):
             self.hermes_api_cmd(
                 self.spawn_info(nprocs=nprocs,
                                 ppn=ppn,
-                                hostfile=self.HOSTFILE.subset(num_nodes),
+                                hostfile=self.hostfiles[num_nodes],
                                 hermes_conf=hermes_conf,
                                 file_output=f"{self.TEST_DIR}/{test_name}"),
                 "putget", xfer_size, count_pp)
@@ -122,7 +127,7 @@ class AresTestManager(TestManager):
             self.hermes_api_cmd(
                 self.spawn_info(nprocs=nprocs,
                                 ppn=ppn,
-                                hostfile=self.HOSTFILE.subset(num_nodes),
+                                hostfile=self.hostfiles[num_nodes],
                                 hermes_conf=hermes_conf,
                                 file_output=f"{self.TEST_DIR}/{test_name}"),
                 "create_bkt", count_pp)
@@ -147,7 +152,7 @@ class AresTestManager(TestManager):
             self.hermes_api_cmd(
                 self.spawn_info(nprocs=nprocs,
                                 ppn=ppn,
-                                hostfile=self.HOSTFILE.subset(num_nodes),
+                                hostfile=self.hostfiles[num_nodes],
                                 hermes_conf=hermes_conf,
                                 file_output=f"{self.TEST_DIR}/{test_name}"),
                 "get_bkt", count_pp)
@@ -258,7 +263,7 @@ class AresTestManager(TestManager):
         for nprocs, dev in test_cases:
             spawn_info = self.spawn_info(nprocs=nprocs,
                                          ppn=nprocs,
-                                         hostfile=self.HOSTFILE.subset(1),
+                                         hostfile=self.hostfiles[1],
                                          api='posix')
             self.ior_write_cmd(spawn_info,
                                '1m', '40g', dev=dev)
