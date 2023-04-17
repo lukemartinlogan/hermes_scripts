@@ -347,7 +347,7 @@ class TestManager(ABC):
         # Run IOR
         cmd = [
             'ior',
-            '-w',   # Write-only
+            '-w -r',   # Write-only
             f"-o {self.devices[dev]}/hi.txt",  # Output file
             f"-t {transfer_size}",
             f"-b {io_size_per_rank}",
