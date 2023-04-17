@@ -7,6 +7,7 @@ from jarvis_util.shell.exec_info import ExecType, ExecInfo
 from jarvis_util.shell.local_exec import LocalExecInfo
 from jarvis_util.shell.mpi_exec import MpiExecInfo
 from jarvis_util.shell.pssh_exec import PsshExecInfo
+from jarvis_util.shell.rm import Rm
 from jarvis_util.shell.exec import Exec
 import time
 import os, sys
@@ -183,7 +184,8 @@ class TestManager(ABC):
         for dir in self.devices.values():
             files = os.listdir(dir)
             for file in files:
-                os.remove(os.path.join(dir, file))
+                Rm(os.path.join(dir, file),
+                   self.spawn_all_nodes())
 
     def find_tests(self):
         # Filter the list to include only attributes that start with "test"
