@@ -88,7 +88,7 @@ class AresTestManager(TestManager):
         size_per_node = {
             #'4k': SizeConv.to_int('500m'),
             #'64k': SizeConv.to_int('6g'),
-            '1m': SizeConv.to_int('40g'),
+            '1m': SizeConv.to_int('100g'),
         }
         combos = itertools.product(xfer_size_set, hermes_conf_set,
                                    num_nodes_set, ppn_set)
