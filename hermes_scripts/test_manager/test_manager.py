@@ -184,7 +184,7 @@ class TestManager(ABC):
         for dir in self.devices.values():
             files = os.listdir(dir)
             for file in files:
-                Rm(os.path.join(dir, file),
+                Rm(os.path.join(dir, file, '*'),
                    self.spawn_all_nodes())
 
     def find_tests(self):
