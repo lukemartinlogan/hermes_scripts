@@ -89,7 +89,7 @@ class AresTestManager(TestManager):
         num_nodes_set = [1, 2, 3, 4]
         ppn_set = [1, 2, 4, 8, 16, 32, 48]
         size_per_node = {
-            '4k': SizeConv.to_int('500m'),
+            '4k': SizeConv.to_int('16m'),
             '64k': SizeConv.to_int('6g'),
             '1m': SizeConv.to_int('40g'),
         }
