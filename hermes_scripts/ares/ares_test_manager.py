@@ -108,7 +108,7 @@ class AresTestManager(TestManager):
                                 file_output=f"{self.TEST_DIR}/{test_name}"),
                 "putget", xfer_size, count_pp)
 
-    def test_hermes_put_get_tiered_nodes(self):
+    def test_hermes_put_get_tiered_mn(self):
         """
         Test case. Test performance of PUT and GET operations in Hermes.
 
@@ -119,12 +119,12 @@ class AresTestManager(TestManager):
         hermes_conf_set = ["hermes_server_ssd_tcp",
                            "hermes_server_ssd_nvme_tcp",
                            "hermes_server_ssd_nvme_ram_tcp"]
-        num_nodes_set = [2, 4, 8, 15]
-        ppn_set = [16, 32, 48]
+        num_nodes_set = [1, 2, 4, 8, 15]
+        ppn_set = [16]
         size_per_node = {
             #'4k': SizeConv.to_int('500m'),
             #'64k': SizeConv.to_int('6g'),
-            '1m': SizeConv.to_int('100g'),
+            '1m': SizeConv.to_int('10g'),
         }
         combos = itertools.product(xfer_size_set, hermes_conf_set,
                                    num_nodes_set, ppn_set)
