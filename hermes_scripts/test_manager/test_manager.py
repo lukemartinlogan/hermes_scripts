@@ -220,6 +220,7 @@ class TestManager(ABC):
              PsshExecInfo(
                  hostfile=self.spawn_all_nodes().hostfile,
                  collect_output=False))
+        print("END KILL")
 
     def start_daemon(self, spawn_info):
         """
