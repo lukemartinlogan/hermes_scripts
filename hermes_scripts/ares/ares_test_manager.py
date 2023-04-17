@@ -68,7 +68,7 @@ class AresTestManager(TestManager):
         for hostfile in [self.hostfiles[0], self.hostfiles[-1]]:
             spawn_info = self.spawn_info(
                 hostfile=hostfile,
-                hermes_conf='hermes_server_ssd_nvme_ram_mn')
+                hermes_conf='hermes_server_ssd_nvme_ram')
             self.start_daemon(spawn_info)
             self.stop_daemon(spawn_info)
 
