@@ -182,10 +182,8 @@ class TestManager(ABC):
 
     def cleanup(self):
         for dir in self.devices.values():
-            files = os.listdir(dir)
-            for file in files:
-                Rm(os.path.join(dir, file, '*'),
-                   PsshExecInfo(hostfile=self.spawn_all_nodes().hostfile))
+            Rm(os.path.join(dir, '*'),
+               PsshExecInfo(hostfile=self.spawn_all_nodes().hostfile))
 
     def find_tests(self):
         # Filter the list to include only attributes that start with "test"
