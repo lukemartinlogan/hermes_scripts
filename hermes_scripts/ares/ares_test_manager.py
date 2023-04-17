@@ -43,6 +43,7 @@ class AresTestManager(TestManager):
         self.devices['pfs'] = f"{os.environ['HOME']}/test_hermes"
 
     def spawn_all_nodes(self):
+        print(len(self.HOSTFILE))
         return self.spawn_info(hostfile=self.HOSTFILE)
 
     """======================================================================"""
