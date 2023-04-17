@@ -214,6 +214,12 @@ class TestManager(ABC):
     """ General Test Helper Functions """
     """======================================================================"""
 
+    def test_kill(self):
+        Kill("hermes_daemon",
+             PsshExecInfo(
+                 hostfile=self.spawn_all_nodes().hostfile,
+                 collect_output=False))
+
     def start_daemon(self, spawn_info):
         """
         Helper function. Start the Hermes daemon
