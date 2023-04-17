@@ -28,7 +28,7 @@ class AresTestManager(TestManager):
         self.HOSTFILE = Hostfile(os.path.join(
             os.getenv('HOME'), 'hostfile.txt'))
         self.TEST_DIR = os.path.join(os.getenv('HOME'),
-                                     f"hermes_outputs_{time.time()}")
+                                     f"hermes_outputs")
         os.makedirs(self.TEST_DIR)
 
     def set_devices(self):
