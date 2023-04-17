@@ -29,7 +29,7 @@ class AresTestManager(TestManager):
             os.getenv('HOME'), 'hostfile.txt'))
         self.TEST_DIR = os.path.join(os.getenv('HOME'),
                                      f"hermes_outputs")
-        os.makedirs(self.TEST_DIR)
+        os.makedirs(self.TEST_DIR, exist_ok=True)
 
     def set_devices(self):
         user = getpass.getuser()
