@@ -221,7 +221,7 @@ class TestManager(ABC):
 
     def test_is_launched(self):
         print("BEGIN LAUNCH TEST")
-        Exec("`hostname && ps -ef | grep hermes_daemon`",
+        Exec("hostname && ps -ef | grep hermes_daemon",
              PsshExecInfo(
                  hostfile=self.spawn_all_nodes().hostfile,
                  collect_output=False))
