@@ -60,21 +60,12 @@ class AresTestManager(TestManager):
 
         :return: None
         """
-        spawn_info = self.spawn_info(hermes_conf='hermes_server')
-        self.start_daemon(spawn_info)
-        self.stop_daemon(spawn_info)
-
-    def test_hermes_launch_mn(self):
-        """
-        Test case. Launch the hermes daemon + shut it down.
-
-        :return: None
-        """
-        spawn_info = self.spawn_info(
-            hostfile=self.HOSTFILE,
-            hermes_conf='hermes_server_ssd_nvme_ram_mn')
-        self.start_daemon(spawn_info)
-        self.stop_daemon(spawn_info)
+        for count in range(1, len(self.HOSTFILE) + 1):
+            spawn_info = self.spawn_info(
+                hostfile=self.HOSTFILE.subset(count),
+                hermes_conf='hermes_server_ssd_nvme_ram_mn')
+            self.start_daemon(spawn_info)
+            self.stop_daemon(spawn_info)
 
     def test_hermes_put_get_tiered(self):
         """
@@ -261,21 +252,30 @@ class AresTestManager(TestManager):
         self.ior_write_cmd(self.spawn_info(1, api='hdf5'), '1m', '1g')
 
     def test_device_bw(self):
-        nprocs = [1, 2, 4, 8, 16, 32, 48]
-        devs = ['ssd', 'nvme', 'ram']
-        for nproc in nprocs:
-            for dev in devs:
-                spawn_info = self.spawn_info(nproc, api='posix')
-                self.ior_write_cmd(spawn_info,
-                                   '1m', '40g', dev=dev)
+        nprocs_set = [1, 2, 4, 8, 16, 32, 48]
+        dev_set = ['ssd', 'nvme', 'ram']
+        test_cases = itertools.product(nprocs_set, dev_set)
+        for nprocs, dev in test_cases:
+            spawn_info = self.spawn_info(nprocs=nprocs,
+                                         ppn=nprocs,
+                                         hostfile=self.HOSTFILE.subset(1),
+                                         api='posix')
+            self.ior_write_cmd(spawn_info,
+                               '1m', '40g', dev=dev)
         self.test_ram_bw()
 
-    def test_ior_write_mn(self):
-        self.ior_write_cmd(self.spawn_info(8,
-                                           ppn=4,
-                                           hostfile=self.HOSTFILE,
-                                           api='posix'),
-                           '1m', '80g', dev='nvme')
+    def test_ior_write_pfs(self):
+        num_nodes_set = [1, 2, 3, 4]
+        ppn_set = [1, 2, 4, 8, 16, 32, 48]
+        test_cases = itertools.product(num_nodes_set, ppn_set)
+        for num_nodes, ppn in test_cases:
+            nprocs = ppn * num_nodes
+            spawn_info = self.spawn_info(nprocs,
+                                         ppn=ppn,
+                                         hostfile=self.HOSTFILE.subset(
+                                             num_nodes),
+                                         api='posix')
+            self.ior_write_cmd(spawn_info, '1m', '80g', dev='nvme')
 
     def test_ior_write_read(self):
         pass
