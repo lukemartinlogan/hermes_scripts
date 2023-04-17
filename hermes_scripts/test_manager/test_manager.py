@@ -220,6 +220,15 @@ class TestManager(ABC):
                  collect_output=False))
         print("END KILL")
 
+    def test_is_launched(self):
+        print("BEGIN LAUNCH TEST")
+        print(self.spawn_all_nodes().hostfile.hosts)
+        Exec("hostname && ps -ef | grep hermes_daemon",
+             PsshExecInfo(
+                 hostfile=self.spawn_all_nodes().hostfile,
+                 collect_output=False))
+        print("END KILL")
+
     def start_daemon(self, spawn_info):
         """
         Helper function. Start the Hermes daemon
