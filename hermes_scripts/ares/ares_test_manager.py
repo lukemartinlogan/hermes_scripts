@@ -120,7 +120,7 @@ class AresTestManager(TestManager):
                            "hermes_server_ssd_nvme_tcp",
                            "hermes_server_ssd_nvme_ram_tcp"]
         # num_nodes_set = [1, 2, 4, 8, 15]
-        num_nodes_set = [15]
+        num_nodes_set = [1, 2, 4, 8]
         ppn_set = [16]
         size_per_node = {
             #'4k': SizeConv.to_int('500m'),
