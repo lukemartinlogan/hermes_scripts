@@ -88,7 +88,7 @@ class AresTestManager(TestManager):
         size_per_node = {
             #'4k': SizeConv.to_int('500m'),
             #'64k': SizeConv.to_int('6g'),
-            '1m': SizeConv.to_int('100g'),
+            '1m': SizeConv.to_int('40g'),
         }
         combos = itertools.product(xfer_size_set, hermes_conf_set,
                                    num_nodes_set, ppn_set)
@@ -346,14 +346,17 @@ class AresTestManager(TestManager):
     def test_device_bw(self):
         nprocs_set = [1, 2, 4, 8, 16, 32, 48]
         dev_set = ['ssd', 'nvme']
-        test_cases = itertools.product(nprocs_set, dev_set)
-        for nprocs, dev in test_cases:
+        total_size = ['10g', '20g', '40g', '100g']
+        test_cases = itertools.product(nprocs_set, dev_set, total_size)
+        for nprocs, dev, total_size in test_cases:
             spawn_info = self.spawn_info(nprocs=nprocs,
                                          ppn=nprocs,
                                          hostfile=self.hostfiles[1],
                                          api='posix')
-            self.ior_write_cmd(spawn_info,
-                               '1m', '40g', dev=dev)
+            total_size = SizeConv.to_int(total_size)
+            size_pp = total_size / nprocs
+            self.ior_write_read_cmd(spawn_info,
+                                    '1m', size_pp, dev=dev)
         self.test_ram_bw()
 
     def test_ior_write_pfs(self):

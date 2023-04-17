@@ -327,10 +327,9 @@ class TestManager(ABC):
         if spawn_info.hermes_mode is not None:
             self.stop_daemon(spawn_info)
 
-    def ior_write_read_no_hermes_cmd(self, spawn_info,
-                                     transfer_size,
-                                     io_size_per_rank,
-                                     dev='nvme'):
+    def ior_write_read_cmd(self, spawn_info, transfer_size,
+                           io_size_per_rank,
+                           dev='nvme'):
         """
         A write-then-read IOR workflow
 
