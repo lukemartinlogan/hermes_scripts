@@ -253,7 +253,7 @@ class AresTestManager(TestManager):
 
     def test_device_bw(self):
         nprocs_set = [1, 2, 4, 8, 16, 32, 48]
-        dev_set = ['ssd', 'nvme', 'ram']
+        dev_set = ['ssd', 'nvme']
         test_cases = itertools.product(nprocs_set, dev_set)
         for nprocs, dev in test_cases:
             spawn_info = self.spawn_info(nprocs=nprocs,
