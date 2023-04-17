@@ -15,7 +15,7 @@ devices:
 
 ### Define properties of RPCs
 rpc:
-  host_file: "${HOME}/hostfile.txt"
+  host_file: "${HERMES_HOSTFILE}"
   host_names: []
   protocol: "ofi+tcp"
   domain: ""
