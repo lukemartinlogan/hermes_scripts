@@ -185,7 +185,7 @@ class TestManager(ABC):
             files = os.listdir(dir)
             for file in files:
                 Rm(os.path.join(dir, file, '*'),
-                   PsshExecInfo(hostfile=self.spawn_all_nodes()))
+                   PsshExecInfo(hostfile=self.spawn_all_nodes().hostfile))
 
     def find_tests(self):
         # Filter the list to include only attributes that start with "test"
