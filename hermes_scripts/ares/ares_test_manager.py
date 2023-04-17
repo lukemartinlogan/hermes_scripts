@@ -78,15 +78,16 @@ class AresTestManager(TestManager):
 
         :return: None
         """
-        xfer_size_set = ["4k", "64k", "1m"]
+        #xfer_size_set = ["4k", "64k", "1m"]
+        xfer_size_set = ["1m"]
         hermes_conf_set = ["hermes_server_ssd_tcp",
                            "hermes_server_ssd_nvme_tcp",
                            "hermes_server_ssd_nvme_ram_tcp"]
         num_nodes_set = [1, 2, 3, 4]
         ppn_set = [1, 2, 4, 8, 16, 32, 48]
         size_per_node = {
-            '4k': SizeConv.to_int('500m'),
-            '64k': SizeConv.to_int('6g'),
+            #'4k': SizeConv.to_int('500m'),
+            #'64k': SizeConv.to_int('6g'),
             '1m': SizeConv.to_int('40g'),
         }
         combos = itertools.product(xfer_size_set, hermes_conf_set,
