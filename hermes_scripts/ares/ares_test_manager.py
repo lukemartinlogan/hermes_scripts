@@ -157,12 +157,12 @@ class AresTestManager(TestManager):
                            "hermes_server_ssd_nvme_ram_rand_tcp",
                            "hermes_server_ssd_nvme_ram_rr_tcp"]
         # num_nodes_set = [1, 2, 4, 8, 15]
-        num_nodes_set = [1, 2, 4]
+        num_nodes_set = [4]
         ppn_set = [16]
         size_per_node = {
             #'4k': SizeConv.to_int('500m'),
             #'64k': SizeConv.to_int('6g'),
-            '1m': SizeConv.to_int('10g'),
+            '1m': SizeConv.to_int('40g'),
         }
         combos = itertools.product(xfer_size_set, hermes_conf_set,
                                    num_nodes_set, ppn_set)
