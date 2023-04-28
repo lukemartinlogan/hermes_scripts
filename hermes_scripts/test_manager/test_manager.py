@@ -100,9 +100,9 @@ class TestManager(ABC):
     def test_init(self):
         # Make all device paths
         spawn_info = self.spawn_all_nodes()
-        for path in self.devices.values():
-            Exec(f"mkdir -p {path}",
-                 PsshExecInfo(hostfile=spawn_info.hostfile))
+        paths = " ".join(list(self.devices.values()))
+        Exec(f"mkdir -p {paths}",
+             PsshExecInfo(hostfile=spawn_info.hostfile))
 
     def test_hostfile(self):
         # Make all device paths
@@ -112,7 +112,6 @@ class TestManager(ABC):
             Exec(f"hostname",
                  PsshExecInfo(hostfile=spawn_info.hostfile.subset(count)))
             print()
-
 
     def spawn_info(self, nprocs=None, ppn=None, hostfile=None,
                    hermes_conf=None, hermes_mode=None, api=None,
@@ -176,7 +175,8 @@ class TestManager(ABC):
                          hostfile=hostfile,
                          hermes_conf=hermes_conf,
                          hermes_mode=hermes_mode,
-                         file_output=file_output,
+                         pipe_stdout=file_output,
+                         pipe_stderr=file_output,
                          api=api,
                          env=env)
 

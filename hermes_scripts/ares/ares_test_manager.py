@@ -156,12 +156,9 @@ class AresTestManager(TestManager):
         hermes_conf_set = ["hermes_server_ssd_nvme_ram_minio_tcp",
                            "hermes_server_ssd_nvme_ram_rand_tcp",
                            "hermes_server_ssd_nvme_ram_rr_tcp"]
-        # num_nodes_set = [1, 2, 4, 8, 15]
         num_nodes_set = [4]
         ppn_set = [16]
         size_per_node = {
-            #'4k': SizeConv.to_int('500m'),
-            #'64k': SizeConv.to_int('6g'),
             '1m': SizeConv.to_int('40g'),
         }
         combos = itertools.product(xfer_size_set, hermes_conf_set,
@@ -402,7 +399,7 @@ class AresTestManager(TestManager):
 
     def test_ior_write_pfs(self):
         num_nodes_set = [1, 2, 3, 4]
-        ppn_set = [1, 2, 4, 8, 16, 32, 48]
+        ppn_set = [16]
         test_cases = itertools.product(num_nodes_set, ppn_set)
         for num_nodes, ppn in test_cases:
             nprocs = ppn * num_nodes
@@ -411,7 +408,7 @@ class AresTestManager(TestManager):
                                          hostfile=self.HOSTFILE.subset(
                                              num_nodes),
                                          api='posix')
-            self.ior_write_cmd(spawn_info, '1m', '80g', dev='nvme')
+            self.ior_write_cmd(spawn_info, '1m', '1g', dev='nvme')
 
     def test_ior_write_read(self):
         pass
@@ -420,24 +417,19 @@ class AresTestManager(TestManager):
     """ IOR Tests (HERMES) """
     """======================================================================"""
     def test_hermes_ior_write_tiered(self):
-        self.ior_write_cmd(
-            self.spawn_info(8,
-                            hermes_mode='kScratch',
-                            hermes_conf='hermes_server_ssd',
-                            api='posix'),
-            '1m', '4g', dev='ssd')
-        self.ior_write_cmd(
-            self.spawn_info(8,
-                            hermes_mode='kScratch',
-                            hermes_conf='hermes_server_ssd',
-                            api='posix'),
-            '1m', '4g', dev='ssd_nvme')
-        self.ior_write_cmd(
-            self.spawn_info(8,
-                            hermes_mode='kScratch',
-                            hermes_conf='hermes_server_ssd',
-                            api='posix'),
-            '1m', '4g', dev='ssd_nvme_ram')
+        num_nodes_set = [1, 2, 3, 4]
+        ppn_set = [16]
+        apis = ['posix', 'hdf5', 'mpiio']
+        test_cases = itertools.product(num_nodes_set, ppn_set, apis)
+        for num_nodes, ppn, api in test_cases:
+            nprocs = ppn * num_nodes
+            spawn_info = self.spawn_info(
+                nprocs,
+                ppn=ppn,
+                hostfile=self.HOSTFILE.subset(num_nodes),
+                hermes_conf='hermes_server_ssd_nvme_ram_tcp',
+                api=api)
+            self.ior_write_cmd(spawn_info, '1m', '1g', dev='ssd')
 
     def test_hermes_ior_write_read(self):
         pass
