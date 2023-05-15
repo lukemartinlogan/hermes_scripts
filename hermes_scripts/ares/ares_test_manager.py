@@ -3,7 +3,7 @@ USAGE: luke_test_manager.py [TEST_NAME]
 """
 from jarvis_util.jutil_manager import JutilManager
 from jarvis_util.shell.mpi_exec import MpiExec
-from jarvis_util.shell.kill import Kill
+from jarvis_util.shell.process import Kill
 import itertools
 from jarvis_util.util.hostfile import Hostfile
 from jarvis_util.shell.exec import Exec
