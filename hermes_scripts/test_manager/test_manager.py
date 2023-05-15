@@ -22,6 +22,9 @@ class SpawnInfo(MpiExecInfo):
         self.hermes_mode = hermes_mode
         self.use_hermes = use_hermes
         self.api = api
+        self.daemon_env = self.env.copy()
+        if 'LD_PRELOAD' in self.daemon_env:
+            del self.daemon_env['LD_PRELOAD']
 
 
 class SizeConv:
@@ -243,7 +246,7 @@ class TestManager(ABC):
         self.daemon = Exec(f"{self.CMAKE_BINARY_DIR}/bin/hermes_daemon",
                            PsshExecInfo(
                                hostfile=spawn_info.hostfile,
-                               env=spawn_info.env,
+                               env=spawn_info.daemon_env,
                                collect_output=False,
                                hide_output=False,
                                exec_async=True))
@@ -260,7 +263,7 @@ class TestManager(ABC):
         print("Stop daemon")
         Exec(f"{self.CMAKE_BINARY_DIR}/bin/finalize_hermes",
              LocalExecInfo(
-                 env=spawn_info.env,
+                 env=spawn_info.daemon_env,
                  collect_output=False))
         self.daemon.wait()
         print("Stopped daemon")
