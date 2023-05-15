@@ -2,12 +2,12 @@
 USAGE: luke_test_manager.py [TEST_NAME]
 """
 from jarvis_util.jutil_manager import JutilManager
-from jarvis_util.shell.kill import Kill
+from jarvis_util.shell.process import Kill
 from jarvis_util.shell.exec_info import ExecType, ExecInfo
 from jarvis_util.shell.local_exec import LocalExecInfo
 from jarvis_util.shell.mpi_exec import MpiExecInfo
 from jarvis_util.shell.pssh_exec import PsshExecInfo
-from jarvis_util.shell.rm import Rm
+from jarvis_util.shell.filesystem import Rm
 from jarvis_util.shell.exec import Exec
 import time
 import os, sys
