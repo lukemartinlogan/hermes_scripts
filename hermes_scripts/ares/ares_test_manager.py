@@ -410,6 +410,7 @@ class AresTestManager(TestManager):
             nprocs = ppn * num_nodes
             test_name = f"test_hermes_ior_write_tiered_{num_nodes}_{ppn}_{api}"
             test_out = f"{self.TEST_DIR}/{test_name}"
+            print(num_nodes)
             spawn_info = self.spawn_info(
                 nprocs,
                 ppn=ppn,
