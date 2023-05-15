@@ -411,14 +411,14 @@ class AresTestManager(TestManager):
             test_name = f"test_hermes_ior_write_tiered_{num_nodes}_{ppn}_{api}"
             test_out = f"{self.TEST_DIR}/{test_name}"
             spawn_info = self.spawn_info(
-                nprocs,
+                nprocs=nprocs,
                 ppn=ppn,
                 hostfile=self.hostfiles[num_nodes],
                 hermes_conf='hermes_server_ssd_nvme_ram_tcp',
                 file_output=test_out,
                 api=api)
             spawn_info = self.spawn_info(
-                hostfile=self.hostfiles[1],
+                hostfile=self.hostfiles[num_nodes],
                 hermes_conf='hermes_server_ssd_nvme_ram_tcp')
             self.start_daemon(spawn_info)
             self.stop_daemon(spawn_info)
