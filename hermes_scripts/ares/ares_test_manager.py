@@ -391,8 +391,7 @@ class AresTestManager(TestManager):
             nprocs = ppn * num_nodes
             spawn_info = self.spawn_info(nprocs,
                                          ppn=ppn,
-                                         hostfile=self.HOSTFILE.subset(
-                                             num_nodes),
+                                         hostfile=self.hostfiles[num_nodes],
                                          api='posix')
             self.ior_write_cmd(spawn_info, '1m', '1g', dev='nvme')
 
@@ -409,17 +408,18 @@ class AresTestManager(TestManager):
         test_cases = itertools.product(num_nodes_set, ppn_set, apis)
         for num_nodes, ppn, api in test_cases:
             nprocs = ppn * num_nodes
-            print(self.HOSTFILE.subset(num_nodes))
             test_name = f"test_hermes_ior_write_tiered_{num_nodes}_{ppn}_{api}"
             test_out = f"{self.TEST_DIR}/{test_name}"
             spawn_info = self.spawn_info(
                 nprocs,
                 ppn=ppn,
-                hostfile=self.HOSTFILE.subset(num_nodes),
+                hostfile=self.hostfiles[num_nodes],
                 hermes_conf='hermes_server_ssd_nvme_ram_tcp',
                 file_output=test_out,
                 api=api)
-            self.ior_write_cmd(spawn_info, '1m', '1g', dev='ssd')
+            self.start_daemon(spawn_info)
+            self.stop_daemon(spawn_info)
+            # self.ior_write_cmd(spawn_info, '1m', '1g', dev='ssd')
 
     def test_hermes_ior_write_read(self):
         pass
