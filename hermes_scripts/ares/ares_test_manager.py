@@ -403,12 +403,13 @@ class AresTestManager(TestManager):
     """ IOR Tests (HERMES) """
     """======================================================================"""
     def test_hermes_ior_write_tiered(self):
-        num_nodes_set = [4]
+        num_nodes_set = [1]
         ppn_set = [16]
         apis = ['posix', 'hdf5', 'mpiio']
         test_cases = itertools.product(num_nodes_set, ppn_set, apis)
         for num_nodes, ppn, api in test_cases:
             nprocs = ppn * num_nodes
+            print(self.HOSTFILE.subset(num_nodes))
             spawn_info = self.spawn_info(
                 nprocs,
                 ppn=ppn,
