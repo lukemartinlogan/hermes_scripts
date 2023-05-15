@@ -415,7 +415,7 @@ class AresTestManager(TestManager):
                 ppn=ppn,
                 hostfile=self.hostfiles[num_nodes],
                 hermes_conf='hermes_server_ssd_nvme_ram_tcp',
-                file_output=test_out,
+                #file_output=test_out,
                 api=api)
             self.start_daemon(spawn_info)
             self.stop_daemon(spawn_info)
