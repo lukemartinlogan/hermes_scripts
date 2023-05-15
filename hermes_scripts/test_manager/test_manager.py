@@ -16,10 +16,11 @@ from abc import ABC, abstractmethod
 
 class SpawnInfo(MpiExecInfo):
     def __init__(self, nprocs, hermes_conf=None, hermes_mode=None, api=None,
-                 **kwargs):
+                 use_hermes=False, **kwargs):
         super().__init__(nprocs=nprocs, **kwargs)
         self.hermes_conf = hermes_conf
         self.hermes_mode = hermes_mode
+        self.use_hermes = use_hermes
         self.api = api
 
 
@@ -171,6 +172,7 @@ class TestManager(ABC):
         return SpawnInfo(nprocs=nprocs,
                          ppn=ppn,
                          hostfile=hostfile,
+                         use_hermes=use_hermes,
                          hermes_conf=hermes_conf,
                          hermes_mode=hermes_mode,
                          pipe_stdout=file_output,
@@ -320,7 +322,7 @@ class TestManager(ABC):
         :return: None
         """
         # Start daemon
-        if spawn_info.hermes_mode is not None:
+        if spawn_info.use_hermes:
             self.start_daemon(spawn_info)
 
         # Run IOR
@@ -337,7 +339,7 @@ class TestManager(ABC):
         Exec(cmd, spawn_info)
 
         # Stop daemon
-        if spawn_info.hermes_mode is not None:
+        if spawn_info.use_hermes:
             self.stop_daemon(spawn_info)
 
     def ior_write_read_cmd(self, spawn_info, transfer_size,
@@ -354,7 +356,7 @@ class TestManager(ABC):
         :return: None
         """
         # Start daemon
-        if spawn_info.hermes_mode is not None:
+        if spawn_info.use_hermes:
             self.start_daemon(spawn_info)
 
         # Run IOR
@@ -371,5 +373,5 @@ class TestManager(ABC):
         Exec(cmd, spawn_info)
 
         # Stop daemon
-        if spawn_info.hermes_mode is not None:
+        if spawn_info.use_hermes:
             self.stop_daemon(spawn_info)

@@ -345,33 +345,19 @@ class AresTestManager(TestManager):
     """======================================================================"""
     def test_ram_bw(self):
         count = SizeConv.to_int('16g') / SizeConv.to_int('1m')
-        self.memcpy_test_cmd(self.spawn_info(1, hermes_conf='hermes_server'),
-                             '1m', count)
-        self.memcpy_test_cmd(self.spawn_info(2, hermes_conf='hermes_server'),
-                             '1m', count / 2)
-        self.memcpy_test_cmd(self.spawn_info(4, hermes_conf='hermes_server'),
-                             '1m', count / 4)
-        self.memcpy_test_cmd(self.spawn_info(8, hermes_conf='hermes_server'),
-                             '1m', count / 8)
-        self.memcpy_test_cmd(self.spawn_info(16, hermes_conf='hermes_server'),
-                             '1m', count / 16)
-        self.memcpy_test_cmd(self.spawn_info(32, hermes_conf='hermes_server'),
-                             '1m', count / 32)
+        nprocs_set = [1, 2, 4, 8, 16, 32]
+        for nprocs in nprocs_set:
+            self.memcpy_test_cmd(
+                self.spawn_info(nprocs, hermes_conf='hermes_server'),
+                '1m', count / nprocs)
 
     def test_ram_latency(self):
-        count = SizeConv.to_int('16g') / 4096
-        self.memcpy_test_cmd(self.spawn_info(1, hermes_conf='hermes_server'),
-                             '1m', count)
-        self.memcpy_test_cmd(self.spawn_info(2, hermes_conf='hermes_server'),
-                             '1m', count / 2)
-        self.memcpy_test_cmd(self.spawn_info(4, hermes_conf='hermes_server'),
-                             '1m', count / 4)
-        self.memcpy_test_cmd(self.spawn_info(8, hermes_conf='hermes_server'),
-                             '1m', count / 8)
-        self.memcpy_test_cmd(self.spawn_info(16, hermes_conf='hermes_server'),
-                             '1m', count / 16)
-        self.memcpy_test_cmd(self.spawn_info(32, hermes_conf='hermes_server'),
-                             '1m', count / 32)
+        count = SizeConv.to_int('16g') / SizeConv.to_int('4k')
+        nprocs_set = [1, 2, 4, 8, 16, 32]
+        for nprocs in nprocs_set:
+            self.memcpy_test_cmd(
+                self.spawn_info(nprocs, hermes_conf='hermes_server'),
+                '4k', count / nprocs)
 
     def test_ior_backends(self):
         self.ior_write_cmd(self.spawn_info(1, api='posix'), '1m', '1g')
