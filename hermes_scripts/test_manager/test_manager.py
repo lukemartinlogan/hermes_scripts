@@ -7,6 +7,7 @@ from jarvis_util.shell.exec_info import ExecType, ExecInfo
 from jarvis_util.shell.local_exec import LocalExecInfo
 from jarvis_util.shell.mpi_exec import MpiExecInfo
 from jarvis_util.shell.pssh_exec import PsshExecInfo
+from jarvis_util.util.size_conv import SizeConv
 from jarvis_util.shell.filesystem import Rm
 from jarvis_util.shell.exec import Exec
 import time
@@ -25,42 +26,6 @@ class SpawnInfo(MpiExecInfo):
         self.daemon_env = {key: val for key, val in self.env.items()
                            if key != 'LD_PRELOAD'}
 
-class SizeConv:
-    @staticmethod
-    def to_int(text):
-        text = text.lower()
-        if 'k' in text:
-            return SizeConv.KB(text)
-        if 'm' in text:
-            return SizeConv.MB(text)
-        if 'g' in text:
-            return SizeConv.GB(text)
-        if 't' in text:
-            return SizeConv.TB(text)
-        if 'p' in text:
-            return SizeConv.PB(text)
-        return int(text)
-
-    @staticmethod
-    def KB(num):
-        return int(num.split('k')[0]) * (1 << 10)
-
-    @staticmethod
-    def MB(num):
-        return int(num.split('m')[0]) * (1 << 20)
-
-    @staticmethod
-    def GB(num):
-        return int(num.split('g')[0]) * (1 << 30)
-
-    @staticmethod
-    def TB(num):
-        return int(num.split('t')[0]) * (1 << 40)
-
-    @staticmethod
-    def PB(num):
-        return int(num.split('p')[0]) * (1 << 50)
-
 
 class TestManager(ABC):
     """======================================================================"""
@@ -73,6 +38,8 @@ class TestManager(ABC):
         jutil = JutilManager.get_instance()
         jutil.collect_output = True
         jutil.hide_output = False
+        jutil.debug_mpi_exec = True
+        jutil.debug_local_exec = False
         self.TEST_MACHINE_DIR = test_machine_dir
         self.HERMES_SCRIPTS_ROOT = hermes_scripts_root
         self.CMAKE_SOURCE_DIR = None

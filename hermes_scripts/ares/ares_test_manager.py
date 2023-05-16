@@ -7,7 +7,8 @@ from jarvis_util.shell.process import Kill
 import itertools
 from jarvis_util.util.hostfile import Hostfile
 from jarvis_util.shell.exec import Exec
-from hermes_scripts.test_manager.test_manager import TestManager, SizeConv
+from jarvis_util.util.size_conv import SizeConv
+from hermes_scripts.test_manager.test_manager import TestManager
 import time
 import getpass
 import os, sys
