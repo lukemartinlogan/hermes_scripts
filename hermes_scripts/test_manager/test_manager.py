@@ -22,10 +22,8 @@ class SpawnInfo(MpiExecInfo):
         self.hermes_mode = hermes_mode
         self.use_hermes = use_hermes
         self.api = api
-        self.daemon_env = self.env.copy()
-        if 'LD_PRELOAD' in self.daemon_env:
-            del self.daemon_env['LD_PRELOAD']
-
+        self.daemon_env = {key: val for key, val in self.env.items()
+                           if key != 'LD_PRELOAD'}
 
 class SizeConv:
     @staticmethod
