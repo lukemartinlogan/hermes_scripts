@@ -298,7 +298,7 @@ class TestManager(ABC):
         cmd = [
             'ior',
             '-w',   # Write-only
-            f"-o {self.devices[dev]}/hi.txt",  # Output file
+            f"-o {self.devices[dev]}/ior_out/hi.txt",  # Output file
             f"-t {transfer_size}",
             f"-b {io_size_per_rank}",
             '-k',   # Keep files after IOR
@@ -332,7 +332,7 @@ class TestManager(ABC):
         cmd = [
             'ior',
             '-w -r',   # Write-only
-            f"-o {self.devices[dev]}/hi.txt",  # Output file
+            f"-o {self.devices[dev]}/ior_out/hi.txt",  # Output file
             f"-t {transfer_size}",
             f"-b {io_size_per_rank}",
             '-k',
