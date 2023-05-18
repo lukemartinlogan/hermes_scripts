@@ -24,7 +24,7 @@ devices:
 
   ssd:
     mount_point: "/mnt/hdd/${USER}/test_hermes"
-    capacity: 400GB # SSD has 477GB total
+    capacity: 120GB # SSD has 477GB total
     block_size: 4KB
     slab_sizes: [ 4KB, 16KB, 64KB, 1MB ]
     bandwidth: 500MBps
