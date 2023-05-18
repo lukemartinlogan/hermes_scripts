@@ -404,7 +404,8 @@ class AresTestManager(TestManager):
     """ IOR Tests (HERMES) """
     """======================================================================"""
     def test_hermes_ior_write_tiered(self):
-        num_nodes_set = [1]
+        num_nodes_set = [4]
+        io_size = ['1m']
         ppn_set = [16]
         config_set = ['hermes_server_ssd_nvme_ram_tcp',
                       'hermes_server_ssd_nvme_tcp',
@@ -413,7 +414,7 @@ class AresTestManager(TestManager):
         test_cases = itertools.product(num_nodes_set, ppn_set, config_set, apis)
         for num_nodes, ppn, config, api in test_cases:
             nprocs = ppn * num_nodes
-            test_name = f"test_hermes_ior_write_tiered_{num_nodes}_{ppn}_{api}_{config}"
+            test_name = f"test_hermes_ior_write_tiered_{num_nodes}_{ppn}_{api}_{io_size}_{config}"
             test_out = f"{self.TEST_DIR}/{test_name}"
             spawn_info = self.spawn_info(
                 nprocs=nprocs,
@@ -423,7 +424,7 @@ class AresTestManager(TestManager):
                 hermes_mode='kScratch',
                 file_output=test_out,
                 api=api)
-            self.ior_write_cmd(spawn_info, '1m', '1g', dev='hdd')
+            self.ior_write_cmd(spawn_info, io_size, '1g', dev='hdd')
 
     def test_hermes_ior_write_read(self):
         pass
