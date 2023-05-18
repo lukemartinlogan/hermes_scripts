@@ -41,6 +41,7 @@ class AresTestManager(TestManager):
         user = getpass.getuser()
         self.devices['ssd'] = f"/mnt/ssd/{user}/test_hermes"
         self.devices['nvme'] = f"/mnt/nvme/{user}/test_hermes"
+        self.devices['hdd'] = f"/mnt/hdd/{user}/test_hermes"
         self.devices['pfs'] = f"{os.environ['HOME']}/test_hermes"
 
     def spawn_all_nodes(self):
@@ -419,7 +420,7 @@ class AresTestManager(TestManager):
                 hermes_mode='kScratch',
                 file_output=test_out,
                 api=api)
-            self.ior_write_cmd(spawn_info, '1m', '1g', dev='pfs')
+            self.ior_write_cmd(spawn_info, '1m', '1g', dev='hdd')
 
     def test_hermes_ior_write_read(self):
         pass
