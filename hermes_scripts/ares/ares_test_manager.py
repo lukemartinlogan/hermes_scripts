@@ -413,7 +413,7 @@ class AresTestManager(TestManager):
         test_cases = itertools.product(num_nodes_set, ppn_set, config_set, apis)
         for num_nodes, ppn, config, api in test_cases:
             nprocs = ppn * num_nodes
-            test_name = f"test_hermes_ior_write_tiered_{num_nodes}_{ppn}_{api}"
+            test_name = f"test_hermes_ior_write_tiered_{num_nodes}_{ppn}_{api}_{config}"
             test_out = f"{self.TEST_DIR}/{test_name}"
             spawn_info = self.spawn_info(
                 nprocs=nprocs,
