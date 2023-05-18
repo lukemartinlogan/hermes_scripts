@@ -406,9 +406,12 @@ class AresTestManager(TestManager):
     def test_hermes_ior_write_tiered(self):
         num_nodes_set = [1]
         ppn_set = [16]
-        apis = ['posix', 'hdf5', 'mpiio']
-        test_cases = itertools.product(num_nodes_set, ppn_set, apis)
-        for num_nodes, ppn, api in test_cases:
+        config_set = ['hermes_server_ssd_nvme_ram_tcp',
+                      'hermes_server_ssd_nvme_tcp',
+                      'hermes_server_ssd_tcp']
+        apis = ['posix']
+        test_cases = itertools.product(num_nodes_set, ppn_set, config_set, apis)
+        for num_nodes, ppn, config, api in test_cases:
             nprocs = ppn * num_nodes
             test_name = f"test_hermes_ior_write_tiered_{num_nodes}_{ppn}_{api}"
             test_out = f"{self.TEST_DIR}/{test_name}"
@@ -416,7 +419,7 @@ class AresTestManager(TestManager):
                 nprocs=nprocs,
                 ppn=ppn,
                 hostfile=self.hostfiles[num_nodes],
-                hermes_conf='hermes_server_ssd_nvme_ram_tcp',
+                hermes_conf=config,
                 hermes_mode='kScratch',
                 file_output=test_out,
                 api=api)
