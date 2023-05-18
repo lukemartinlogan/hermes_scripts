@@ -416,6 +416,7 @@ class AresTestManager(TestManager):
                 ppn=ppn,
                 hostfile=self.hostfiles[num_nodes],
                 hermes_conf='hermes_server_ssd_nvme_ram_tcp',
+                hermes_mode='kScratch',
                 file_output=test_out,
                 api=api)
             self.ior_write_cmd(spawn_info, '1m', '1g', dev='ssd')
