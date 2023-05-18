@@ -419,7 +419,7 @@ class AresTestManager(TestManager):
                 hermes_mode='kScratch',
                 file_output=test_out,
                 api=api)
-            self.ior_write_cmd(spawn_info, '1m', '1g', dev='ssd')
+            self.ior_write_cmd(spawn_info, '1m', '1g', dev='pfs')
 
     def test_hermes_ior_write_read(self):
         pass
