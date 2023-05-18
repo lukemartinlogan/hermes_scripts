@@ -405,14 +405,14 @@ class AresTestManager(TestManager):
     """======================================================================"""
     def test_hermes_ior_write_tiered(self):
         num_nodes_set = [4]
-        io_size = ['1m']
+        io_size_set = ['1m']
         ppn_set = [16]
         config_set = ['hermes_server_ssd_nvme_ram_tcp',
                       'hermes_server_ssd_nvme_tcp',
                       'hermes_server_ssd_tcp']
         apis = ['posix']
-        test_cases = itertools.product(num_nodes_set, ppn_set, config_set, apis)
-        for num_nodes, ppn, config, api in test_cases:
+        test_cases = itertools.product(num_nodes_set, ppn_set, config_set, io_size_set, apis)
+        for num_nodes, ppn, config, io_size, api in test_cases:
             nprocs = ppn * num_nodes
             test_name = f"test_hermes_ior_write_tiered_{num_nodes}_{ppn}_{api}_{io_size}_{config}"
             test_out = f"{self.TEST_DIR}/{test_name}"
