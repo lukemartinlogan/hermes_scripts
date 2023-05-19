@@ -7,7 +7,7 @@ for the act of
 ## Dependencies
 ```
 spack install ior +hdf5
-spack install hermes
+spack install hermes +vfd
 spack load hermes ior
 git clone https://github.com/lukemartinlogan/jarvis-util.git
 cd jarvis-util
@@ -31,7 +31,7 @@ bash run_test.sh [TEST_MACHINE] [TEST_NAME]
 
 For example:
 ```bash
-bash run_test.sh ares test_hermes_create_bucket
+bash run_test.sh ares test_hermes_ior_write_tiered
 ```
 
 ### Test Machines
@@ -48,3 +48,32 @@ The test machines are as follows:
 
 Running the Ares tests should be portable, so long as dependencies are
 installed.
+
+## Ares Test Cases
+
+All tests are represented as functions in the file 
+hermes_scripts/ares/ares_test_manager.py.
+
+### Setup Tests
+
+There is some setup to do before running tests.
+
+#### Create testing directories
+```
+bash run_test.sh ares test_init
+```
+This will create all necessary directories for tests. For now, this
+is required.
+
+#### 
+
+### test_hermes_ior_write_tiered
+
+The objective of the experiment is to determine the impact of adding
+additional tiers.
+1. 16GB of data is produced
+
+This will output data to ${HOME}/hermes_outputs/test_hermes_ior_write_tiered_*
+```bash
+ls ${HOME}/hermes_outputs | grep test_hermes_ior_write_tiered_*
+```

@@ -3,9 +3,9 @@ path_inclusions: ["/tmp/test_hermes",
                   "${HOME}/ior_out",
                   "/mnt/hdd/${USER}/test_hermes"]
 path_exclusions: ["/"]
-file_page_size: 4KB
+file_page_size: 1MB
 base_adapter_mode: kScratch
 file_adapter_configs:
   - path: "/"
-    page_size: 4KB
+    page_size: 1MB
     mode: kDefault
