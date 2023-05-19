@@ -54,24 +54,74 @@ installed.
 All tests are represented as functions in the file 
 hermes_scripts/ares/ares_test_manager.py.
 
-### Setup Tests
+### 1. Setup Tests
 
 There is some setup to do before running tests.
 
-#### Create testing directories
+#### 1.1. CD into the hermes_scripts directory
+
+We assume that you're in the hermes_scripts directory when running tests.
+This is fundamental to the correctness of the platform.
+
+```bash
+cd /path/to/hermes_scripts
+```
+
+#### 1.2. Create a hostfile
+```bash
+nano ${HOME}/hostfile.txt
+```
+For now, we assume the hostfile is under ${HOME}/hostfile.txt
+
+Example hostfile entries are as follows:
+```
+ares-comp-01-40g
+ares-comp-[01-04]-40g
+ares-comp-[01-05,06]-40g
+```
+
+We do not support fancy hostfile things. Just specify the nodes things
+run on. If needed, we'll add fancy MPI hostfile features, but for now,
+just specify the set of hosts.
+
+#### 1.3. Create testing directories
 ```
 bash run_test.sh ares test_init
 ```
 This will create all necessary directories for tests. For now, this
 is required.
 
-#### 
+### 1.4. Cache the spack environment
 
-### test_hermes_ior_write_tiered
+spack load is extremely slow. It's much faster to cache environment variables
+in a shell script.
+
+```
+spack load --only dependencies hermes
+spack load ior
+bin/cache_env
+```
+
+### Run Tests
+
+The only test we've executed recently is the one below. Other tests need
+updating.
+
+#### 1. test_hermes_ior_write_tiered
 
 The objective of the experiment is to determine the impact of adding
-additional tiers.
-1. 16GB of data is produced
+additional tiers. 
+
+Workload Description
+1. 16GB total dataset size
+2. 1MB transfer size
+3. Write-only
+4. Dataset will fit entirely in the fastest tier
+
+To run the experiment:
+```bash
+bash run_test.sh ares
+```
 
 This will output data to ${HOME}/hermes_outputs/test_hermes_ior_write_tiered_*
 ```bash
