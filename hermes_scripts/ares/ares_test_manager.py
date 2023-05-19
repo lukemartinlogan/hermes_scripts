@@ -428,7 +428,7 @@ class AresTestManager(TestManager):
 
     def test_hermes_ior_write_scale(self):
         num_nodes_set = [1, 2, 4, 8, 16]
-        io_size_set = ['4k', '1m']
+        io_size_set = ['1m']
         ppn_set = [1]
         config_set = ['hermes_server_ssd_nvme_ram_tcp']
         apis = ['posix']
