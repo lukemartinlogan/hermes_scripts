@@ -120,7 +120,7 @@ Workload Description
 
 To run the experiment:
 ```bash
-bash run_test.sh ares
+bash run_test.sh ares test_hermes_ior_write_tiered
 ```
 
 This will output data to ${HOME}/hermes_outputs/test_hermes_ior_write_tiered_*
