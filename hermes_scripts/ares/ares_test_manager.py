@@ -41,7 +41,7 @@ class AresTestManager(TestManager):
         user = getpass.getuser()
         self.devices['ssd'] = f"/mnt/ssd/{user}/test_hermes"
         self.devices['nvme'] = f"/mnt/nvme/{user}/test_hermes"
-        self.devices['hdd'] = f"/mnt/hdd/{user}/test_hermes"
+        self.devices['hdd'] = f"/mnt/ssd/{user}/test_hermes"
         self.devices['pfs'] = f"{os.environ['HOME']}/test_hermes"
 
     def spawn_all_nodes(self):

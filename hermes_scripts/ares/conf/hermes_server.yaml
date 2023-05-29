@@ -23,7 +23,7 @@ devices:
     borg_capacity_thresh: [ 0.0, 1.0 ]
 
   ssd:
-    mount_point: "/mnt/hdd/${USER}/test_hermes"
+    mount_point: "/mnt/ssd/${USER}/test_hermes"
     capacity: 400GB # SSD has 477GB total
     block_size: 4KB
     slab_sizes: [ 4KB, 16KB, 64KB, 1MB ]

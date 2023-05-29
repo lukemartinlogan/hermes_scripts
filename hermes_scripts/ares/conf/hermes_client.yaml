@@ -1,7 +1,7 @@
 stop_daemon: false
 path_inclusions: ["/tmp/test_hermes",
                   "${HOME}/ior_out",
-                  "/mnt/hdd/${USER}/test_hermes"]
+                  "/mnt/ssd/${USER}/test_hermes"]
 path_exclusions: ["/"]
 file_page_size: 1MB
 base_adapter_mode: kScratch
