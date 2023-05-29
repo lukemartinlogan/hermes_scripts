@@ -404,7 +404,7 @@ class AresTestManager(TestManager):
     """ IOR Tests (HERMES) """
     """======================================================================"""
     def test_hermes_ior_write_tiered(self):
-        num_nodes_set = [1]
+        num_nodes_set = [4]
         io_size_set = ['1m']
         ppn_set = [16]
         config_set = ['hermes_server_ssd_nvme_ram_tcp',
