@@ -454,7 +454,7 @@ class AresTestManager(TestManager):
     """ Grey-Scott Model """
     """======================================================================"""
     def test_hermes_gray_scott(self):
-        num_nodes_set = [4]
+        num_nodes_set = [1]
         ppn_set = [16]
         config_set = ['hermes_server_ssd_nvme_ram_tcp',
                       'hermes_server_ssd_tcp']
