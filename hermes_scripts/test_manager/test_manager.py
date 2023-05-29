@@ -364,7 +364,7 @@ class TestManager(ABC):
         # Run IOR
         cwd = '/home/llogan/adiosvm/Tutorial/gray-scott'
         cmd = [
-            f'{cwd}/build/grey-scott',
+            f'{cwd}/build/gray-scott',
             f'{cwd}/simulation/settings-files.json'
         ]
         cmd = " ".join(cmd)
