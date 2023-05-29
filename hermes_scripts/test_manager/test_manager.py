@@ -368,6 +368,7 @@ class TestManager(ABC):
             f'{cwd}/simulation/settings-files.json'
         ]
         cmd = " ".join(cmd)
+        spawn_info = spawn_info.mod(cwd=cwd)
         Exec(cmd, spawn_info)
 
         # Stop daemon
