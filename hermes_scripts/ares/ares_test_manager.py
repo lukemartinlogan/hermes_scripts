@@ -449,3 +449,26 @@ class AresTestManager(TestManager):
 
     def test_hermes_ior_write_read(self):
         pass
+
+    """======================================================================"""
+    """ Grey-Scott Model """
+    """======================================================================"""
+    def test_hermes_gray_scott(self):
+        num_nodes_set = [4]
+        ppn_set = [16]
+        config_set = ['hermes_server_ssd_nvme_ram_tcp',
+                      'hermes_server_ssd_tcp']
+        test_cases = itertools.product(num_nodes_set, ppn_set, config_set)
+        for num_nodes, ppn, config in test_cases:
+            nprocs = ppn * num_nodes
+            test_name = f"test_hermes_gray_scott_{num_nodes}_{ppn}_{config}"
+            test_out = f"{self.TEST_DIR}/{test_name}"
+            spawn_info = self.spawn_info(
+                nprocs=nprocs,
+                ppn=ppn,
+                hostfile=self.hostfiles[num_nodes],
+                hermes_conf=config,
+                hermes_mode='kScratch',
+                file_output=test_out,
+                api='posix')
+            self.grey_scott_cmd(spawn_info, dev='ssd')

@@ -313,7 +313,7 @@ class TestManager(ABC):
 
     def ior_write_read_cmd(self, spawn_info, transfer_size,
                            io_size_per_rank,
-                           dev='nvme'):
+                           dev='ssd'):
         """
         A write-then-read IOR workflow
 
@@ -337,6 +337,35 @@ class TestManager(ABC):
             f"-b {io_size_per_rank}",
             '-k',
             self.get_ior_backend(spawn_info.api)
+        ]
+        cmd = " ".join(cmd)
+        Exec(cmd, spawn_info)
+
+        # Stop daemon
+        if spawn_info.use_hermes:
+            self.stop_daemon(spawn_info)
+
+    def grey_scott_cmd(self, spawn_info,
+                       dev='ssd'):
+        """
+        A write-then-read IOR workflow
+
+        :param spawn_info: MPI process to spawn
+        :param transfer_size: size of each I/O in IOR (e.g., 16k, 1m, 4g)
+        :param io_size_per_rank: Total amount of I/O to do for each rank
+        :param dev: The device to output data to
+
+        :return: None
+        """
+        # Start daemon
+        if spawn_info.use_hermes:
+            self.start_daemon(spawn_info)
+
+        # Run IOR
+        cwd = '/home/llogan/adiosvm/Tutorial/gray-scott'
+        cmd = [
+            f'{cwd}/build/grey-scott',
+            f'{cwd}/simulation/settings-files.json'
         ]
         cmd = " ".join(cmd)
         Exec(cmd, spawn_info)
