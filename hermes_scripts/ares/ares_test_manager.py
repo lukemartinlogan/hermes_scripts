@@ -457,9 +457,9 @@ class AresTestManager(TestManager):
         num_nodes_set = [1]
         ppn_set = [16]
         test_cases = itertools.product(num_nodes_set, ppn_set)
-        for num_nodes, ppn, config in test_cases:
+        for num_nodes, ppn in test_cases:
             nprocs = ppn * num_nodes
-            test_name = f"test_hermes_gray_scott_{num_nodes}_{ppn}_{config}"
+            test_name = f"test_gray_scott_{num_nodes}_{ppn}"
             test_out = f"{self.TEST_DIR}/{test_name}"
             spawn_info = self.spawn_info(
                 nprocs=nprocs,
