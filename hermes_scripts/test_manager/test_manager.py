@@ -24,6 +24,7 @@ class SpawnInfo(MpiExecInfo):
         self.use_hermes = use_hermes
         self.api = api
         self.keys += ['hermes_conf', 'hermes_mode', 'api', 'use_hermes']
+        self.keys.remove('exec_type')
 
     def mod(self, **kwargs):
         for key in self.keys:
