@@ -485,5 +485,5 @@ class AresTestManager(TestManager):
                 hermes_conf=config,
                 hermes_mode='kScratch',
                 file_output=test_out,
-                api='posix')
+                api='mpiio')
             self.grey_scott_cmd(spawn_info, dev='ssd')

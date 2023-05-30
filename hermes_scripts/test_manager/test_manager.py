@@ -366,7 +366,7 @@ class TestManager(ABC):
             self.start_daemon(spawn_info)
 
         # Run IOR
-        cwd = '/home/llogan/adiosvm/Tutorial/gray-scott'
+        cwd = '/home/llogan/adiosvm/Tutorial/gs-mpiio'
         cmd = [
             f'{cwd}/build/gray-scott',
             f'{cwd}/simulation/settings-files.json'
