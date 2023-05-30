@@ -366,14 +366,16 @@ class TestManager(ABC):
             self.start_daemon(spawn_info)
 
         # Run IOR
+        start = time.time_ns()
         cwd = '/home/llogan/adiosvm/Tutorial/gs-mpiio'
         cmd = [
-            'time',
             f'{cwd}/build/gray-scott',
             f'{cwd}/simulation/settings-files.json'
         ]
         cmd = " ".join(cmd)
         Exec(cmd, spawn_info)
+        end = time.time_ns()
+        print(f'GS TIME: {(start - end) / (1 << 30)}')
 
         # Stop daemon
         if spawn_info.use_hermes:
