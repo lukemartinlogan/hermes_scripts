@@ -27,8 +27,10 @@ class SpawnInfo(MpiExecInfo):
 
     def mod(self, **kwargs):
         for key in self.keys:
-            if key not in kwargs and key != 'exec_type':
+            if key not in kwargs:
                 kwargs[key] = getattr(self, key)
+        if 'exec_type' in kwargs:
+            del kwargs['exec_type']
         return SpawnInfo(**kwargs)
 
 
