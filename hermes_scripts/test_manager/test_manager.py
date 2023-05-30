@@ -375,7 +375,7 @@ class TestManager(ABC):
         cmd = " ".join(cmd)
         Exec(cmd, spawn_info)
         end = time.time_ns()
-        print(f'GS TIME: {(start - end) / (1 << 30)}')
+        print(f'GS TIME: {(end - start) / (1 << 30)}')
 
         # Stop daemon
         if spawn_info.use_hermes:
