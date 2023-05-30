@@ -43,7 +43,7 @@ class TestManager(ABC):
         jutil.collect_output = True
         jutil.hide_output = False
         jutil.debug_mpi_exec = True
-        jutil.debug_local_exec = False
+        jutil.debug_local_exec = True
         self.TEST_MACHINE_DIR = test_machine_dir
         self.HERMES_SCRIPTS_ROOT = hermes_scripts_root
         self.CMAKE_SOURCE_DIR = None
