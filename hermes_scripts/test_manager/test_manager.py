@@ -23,8 +23,13 @@ class SpawnInfo(MpiExecInfo):
         self.hermes_mode = hermes_mode
         self.use_hermes = use_hermes
         self.api = api
-        self.daemon_env = {key: val for key, val in self.env.items()
-                           if key != 'LD_PRELOAD'}
+        self.keys += ['hermes_conf', 'hermes_mode', 'api', 'use_hermes']
+
+    def mod(self, **kwargs):
+        for key in self.keys:
+            if key not in kwargs:
+                kwargs[key] = getattr(self, key)
+        return SpawnInfo(**kwargs)
 
 
 class TestManager(ABC):
