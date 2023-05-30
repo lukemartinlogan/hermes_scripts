@@ -178,7 +178,8 @@ class TestManager(ABC):
             for i, test in enumerate(self.tests_):
                 print(f"{i}: {test}")
             exit(1)
-        self.cleanup()
+        # TODO: add back
+        # self.cleanup()
 
     """======================================================================"""
     """ General Test Helper Functions """
