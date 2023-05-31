@@ -1,6 +1,6 @@
 stop_daemon: false
 path_inclusions: ["/tmp/test_hermes",
-                  "${HOME}/ior_out",
+                  "${HOME}/test_hermes",
                   "/mnt/ssd/${USER}/test_hermes"]
 path_exclusions: ["/"]
 file_page_size: 1MB
