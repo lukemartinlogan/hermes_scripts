@@ -466,7 +466,7 @@ class AresTestManager(TestManager):
                 ppn=ppn,
                 hostfile=self.hostfiles[num_nodes],
                 file_output=test_out)
-            self.grey_scott_cmd(spawn_info, dev='ssd')
+            self.grey_scott_cmd(spawn_info, dev='ssd', mode='noio')
 
     def test_hermes_gray_scott(self):
         num_nodes_set = [1]

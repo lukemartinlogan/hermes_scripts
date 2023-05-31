@@ -351,7 +351,8 @@ class TestManager(ABC):
             self.stop_daemon(spawn_info)
 
     def grey_scott_cmd(self, spawn_info,
-                       dev='ssd'):
+                       dev='ssd',
+                       mode='mpiio'):
         """
         A write-then-read IOR workflow
 
@@ -368,7 +369,10 @@ class TestManager(ABC):
 
         # Run IOR
         start = time.time_ns()
-        cwd = '/home/llogan/adiosvm/Tutorial/gs-mpiio'
+        if mode =='mpiio':
+            cwd = '/home/llogan/adiosvm/Tutorial/gs-mpiio'
+        else:
+            cwd = '/home/llogan/adiosvm/Tutorial/gs-noio'
         cmd = [
             f'{cwd}/build/gray-scott',
             f'{cwd}/simulation/settings-files.json'
