@@ -454,7 +454,7 @@ class AresTestManager(TestManager):
     """ Grey-Scott Model """
     """======================================================================"""
     def test_gray_scott(self):
-        num_nodes_set = [1]
+        num_nodes_set = [4]
         ppn_set = [16]
         test_cases = itertools.product(num_nodes_set, ppn_set)
         for num_nodes, ppn in test_cases:
