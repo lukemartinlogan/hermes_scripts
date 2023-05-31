@@ -469,7 +469,7 @@ class AresTestManager(TestManager):
             self.grey_scott_cmd(spawn_info, dev='ssd', mode='mpiio')
 
     def test_hermes_gray_scott(self):
-        num_nodes_set = [1]
+        num_nodes_set = [4]
         ppn_set = [16]
         config_set = ['hermes_server_ssd_nvme_ram_tcp',
                       'hermes_server_ssd_tcp']
