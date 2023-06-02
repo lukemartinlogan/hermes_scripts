@@ -299,7 +299,7 @@ class TestManager(ABC):
         print("BEGINNING STAGING")
         if with_staging:
             self.staging_cmd(no_daemon,
-                             f'{self.devices[dev]}/')
+                             f'{self.devices[dev]}')
         print("ENDING STAGING")
         self.ior_read_cmd(no_daemon, transfer_size, io_size_per_rank, dev)
         self.stop_daemon(spawn_info)
