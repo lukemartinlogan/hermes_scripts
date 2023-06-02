@@ -282,6 +282,29 @@ class TestManager(ABC):
             return '-a=HDF5'
         return ''
 
+    def staging_cmd(self, spawn_info, path, dev='ssd', size='16g'):
+        cmd = [
+            f'{self.CMAKE_BINARY_DIR}/bin/stage_in'
+            f'{self.devices[dev]}/hi.txt',
+            '0',
+            str(size),
+            'kNone'
+        ]
+        cmd = ' '.join(cmd)
+        Exec(cmd, spawn_info)
+
+    def ior_staged_cmd(self, spawn_info, transfer_size, io_size_per_rank,
+                       dev='ssd', with_staging=True):
+        no_hermes = spawn_info.mod(use_hermes=False)
+        self.ior_write_cmd(no_hermes, transfer_size, io_size_per_rank, dev)
+        self.start_daemon(spawn_info)
+        if with_staging:
+            self.staging_cmd(no_hermes, f'{self.devices[dev]}/hi.txt',
+                             SizeConv.to_int(io_size_per_rank) *
+                             int(spawn_info.nprocs))
+        self.ior_read_cmd(no_hermes, transfer_size, io_size_per_rank, dev)
+        self.stop_daemon(spawn_info)
+
     def ior_write_cmd(self, spawn_info, transfer_size,
                       io_size_per_rank,
                       dev='nvme'):
@@ -307,6 +330,39 @@ class TestManager(ABC):
             f"-t {transfer_size}",
             f"-b {io_size_per_rank}",
             '-k',   # Keep files after IOR
+            self.get_ior_backend(spawn_info.api)
+        ]
+        cmd = " ".join(cmd)
+        Exec(cmd, spawn_info)
+
+        # Stop daemon
+        if spawn_info.use_hermes:
+            self.stop_daemon(spawn_info)
+
+    def ior_read_cmd(self, spawn_info, transfer_size,
+                     io_size_per_rank, dev='ssd'):
+        """
+        A write-then-read IOR workflow
+
+        :param spawn_info: MPI process to spawn
+        :param transfer_size: size of each I/O in IOR (e.g., 16k, 1m, 4g)
+        :param io_size_per_rank: Total amount of I/O to do for each rank
+        :param dev: The device to output data to
+
+        :return: None
+        """
+        # Start daemon
+        if spawn_info.use_hermes:
+            self.start_daemon(spawn_info)
+
+        # Run IOR
+        cmd = [
+            'ior',
+            '-r',   # Read-only
+            f"-o {self.devices[dev]}/hi.txt",  # Output file
+            f"-t {transfer_size}",
+            f"-b {io_size_per_rank}",
+            '-k',
             self.get_ior_backend(spawn_info.api)
         ]
         cmd = " ".join(cmd)

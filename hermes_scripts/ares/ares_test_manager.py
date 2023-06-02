@@ -447,6 +447,30 @@ class AresTestManager(TestManager):
                 api=api)
             self.ior_write_cmd(spawn_info, io_size, '1g', dev='ssd')
 
+    def test_hermes_data_staging(self):
+        staging = [False, True]
+        num_nodes_set = [1]
+        io_size_set = ['1m']
+        ppn_set = [1]
+        config_set = ['hermes_server_ssd_nvme_ram_tcp']
+        apis = ['posix']
+        test_cases = itertools.product(num_nodes_set, ppn_set, config_set, io_size_set, apis, staging)
+        for num_nodes, ppn, config, io_size, api, staging in test_cases:
+            nprocs = ppn * num_nodes
+            test_name = f"test_hermes_stage_{num_nodes}_{ppn}_{api}_{io_size}_{staging}"
+            test_out = f"{self.TEST_DIR}/{test_name}"
+            spawn_info = self.spawn_info(
+                nprocs=nprocs,
+                ppn=ppn,
+                hostfile=self.hostfiles[num_nodes],
+                hermes_conf=config,
+                hermes_mode='kScratch',
+                file_output=test_out,
+                api=api)
+            self.ior_staged_cmd(spawn_info, io_size,
+                                '1g', dev='ssd',
+                                with_staging=staging)
+
     def test_hermes_ior_write_read(self):
         pass
 
