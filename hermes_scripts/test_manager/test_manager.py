@@ -42,7 +42,7 @@ class TestManager(ABC):
         jutil = JutilManager.get_instance()
         jutil.collect_output = True
         jutil.hide_output = False
-        jutil.debug_mpi_exec = False
+        jutil.debug_mpi_exec = True
         jutil.debug_local_exec = False
         self.TEST_MACHINE_DIR = test_machine_dir
         self.HERMES_SCRIPTS_ROOT = hermes_scripts_root
