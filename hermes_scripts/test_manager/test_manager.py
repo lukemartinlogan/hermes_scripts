@@ -302,7 +302,7 @@ class TestManager(ABC):
         print("BEGINNING STAGING")
         if with_staging:
             self.staging_cmd(no_daemon,
-                             f'{self.devices[dev]}/hi.txt',
+                             f'{self.devices[dev]}/',
                              SizeConv.to_int(io_size_per_rank) *
                              int(spawn_info.nprocs))
         print("ENDING STAGING")
