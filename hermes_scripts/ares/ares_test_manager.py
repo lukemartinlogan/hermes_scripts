@@ -385,7 +385,7 @@ class AresTestManager(TestManager):
                                     '1m', size_pp, dev=dev)
         self.test_ram_bw()
 
-    def test_ior_write_pfs(self):
+    def test_ior_write(self):
         num_nodes_set = [1]
         ppn_set = [16]
         test_cases = itertools.product(num_nodes_set, ppn_set)
@@ -397,7 +397,7 @@ class AresTestManager(TestManager):
                                          api='posix')
             self.ior_write_cmd(spawn_info, '1m', '1g', dev='ssd')
 
-    def test_ior_write_read(self):
+    def test_ior_read(self):
         num_nodes_set = [1]
         ppn_set = [16]
         test_cases = itertools.product(num_nodes_set, ppn_set)
