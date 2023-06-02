@@ -3,7 +3,7 @@
 ### Define properties of the storage devices
 devices:
   ssd:
-    mount_point: "/mnt/ssd/${USER}/test_hermes"
+    mount_point: "/mnt/ssd/${USER}/hermes_borg"
     capacity: 400GB # SSD has 477GB total
     block_size: 4KB
     slab_sizes: [ 4KB, 16KB, 64KB, 1MB ]

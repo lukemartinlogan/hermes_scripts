@@ -43,6 +43,10 @@ class AresTestManager(TestManager):
         self.devices['nvme'] = f"/mnt/nvme/{user}/test_hermes"
         self.devices['ssd'] = f"/mnt/ssd/{user}/test_hermes"
         self.devices['pfs'] = f"{os.environ['HOME']}/test_hermes"
+        self.devices['ssd_borg'] = f"/mnt/ssd/{user}/hermes_borg"
+        self.devices['nvme_borg'] = f"/mnt/nvme/{user}/hermes_borg"
+        self.devices['ssd_borg'] = f"/mnt/ssd/{user}/hermes_borg"
+        self.devices['pfs_borg'] = f"{os.environ['HOME']}/hermes_borg"
 
     def spawn_all_nodes(self):
         return self.spawn_info(hostfile=self.HOSTFILE)
