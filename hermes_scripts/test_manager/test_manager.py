@@ -282,13 +282,10 @@ class TestManager(ABC):
             return '-a=HDF5'
         return ''
 
-    def staging_cmd(self, spawn_info, path, size):
+    def staging_cmd(self, spawn_info, path):
         cmd = [
             f'{self.CMAKE_BINARY_DIR}/bin/stage_in',
-            path,
-            '0',
-            str(size),
-            'kNone'
+            path, '0', '0' 'kNone'
         ]
         cmd = ' '.join(cmd)
         Exec(cmd, spawn_info)
@@ -302,9 +299,7 @@ class TestManager(ABC):
         print("BEGINNING STAGING")
         if with_staging:
             self.staging_cmd(no_daemon,
-                             f'{self.devices[dev]}/',
-                             SizeConv.to_int(io_size_per_rank) *
-                             int(spawn_info.nprocs))
+                             f'{self.devices[dev]}/')
         print("ENDING STAGING")
         self.ior_read_cmd(no_daemon, transfer_size, io_size_per_rank, dev)
         self.stop_daemon(spawn_info)
