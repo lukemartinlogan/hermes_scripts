@@ -42,7 +42,7 @@ class TestManager(ABC):
         jutil = JutilManager.get_instance()
         jutil.collect_output = True
         jutil.hide_output = False
-        jutil.debug_mpi_exec = True
+        jutil.debug_mpi_exec = False
         jutil.debug_local_exec = False
         self.TEST_MACHINE_DIR = test_machine_dir
         self.HERMES_SCRIPTS_ROOT = hermes_scripts_root
@@ -285,7 +285,7 @@ class TestManager(ABC):
     def staging_cmd(self, spawn_info, path):
         cmd = [
             f'{self.CMAKE_BINARY_DIR}/bin/stage_in',
-            path, '0', '0' 'kNone'
+            path, '0', '0', 'kNone'
         ]
         cmd = ' '.join(cmd)
         Exec(cmd, spawn_info)
