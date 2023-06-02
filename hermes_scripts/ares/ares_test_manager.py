@@ -481,7 +481,7 @@ class AresTestManager(TestManager):
                 file_output=test_out,
                 api=api)
             self.ior_staged_cmd(spawn_info, io_size,
-                                '8g', dev='ssd',
+                                '4g', dev='ssd',
                                 with_staging=staging)
 
     def test_hermes_ior_write_read(self):
