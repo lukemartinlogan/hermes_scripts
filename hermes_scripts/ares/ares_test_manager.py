@@ -390,7 +390,7 @@ class AresTestManager(TestManager):
         self.test_ram_bw()
 
     def test_ior_write(self):
-        num_nodes_set = [4]
+        num_nodes_set = [3]
         ppn_set = [16]
         test_cases = itertools.product(num_nodes_set, ppn_set)
         for num_nodes, ppn in test_cases:
