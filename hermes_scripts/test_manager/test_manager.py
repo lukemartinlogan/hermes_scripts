@@ -294,7 +294,7 @@ class TestManager(ABC):
                        dev='ssd', with_staging=True):
         no_hermes = spawn_info.mod(use_hermes=False, env=spawn_info.basic_env)
         no_daemon = spawn_info.mod(use_hermes=False)
-        # self.ior_write_cmd(no_hermes, transfer_size, io_size_per_rank, dev)
+        self.ior_write_cmd(no_hermes, transfer_size, io_size_per_rank, dev)
         self.start_daemon(spawn_info)
         print("BEGINNING STAGING")
         if with_staging:
