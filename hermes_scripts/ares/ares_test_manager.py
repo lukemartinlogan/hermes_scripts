@@ -461,10 +461,10 @@ class AresTestManager(TestManager):
             self.ior_write_cmd(spawn_info, io_size, '1g', dev='ssd')
 
     def test_hermes_data_staging(self):
-        staging = [True]
+        staging = [True, False]
         num_nodes_set = [1]
         io_size_set = ['1m']
-        ppn_set = [1]
+        ppn_set = [16]
         config_set = ['hermes_server_ssd_nvme_ram_tcp']
         apis = ['posix']
         test_cases = itertools.product(num_nodes_set, ppn_set, config_set, io_size_set, apis, staging)
