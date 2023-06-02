@@ -153,7 +153,7 @@ class TestManager(ABC):
                          api=api,
                          env=env)
 
-    def cleanup(self):
+    def test_cleanup(self):
         dirs = " ".join([os.path.join(d, '*') for d in self.devices.values()])
         Rm(dirs, PsshExecInfo(hostfile=self.spawn_all_nodes().hostfile))
 
@@ -179,7 +179,7 @@ class TestManager(ABC):
                 print(f"{i}: {test}")
             exit(1)
         # TODO: add back
-        # self.cleanup()
+        # self.test_cleanup()
 
     """======================================================================"""
     """ General Test Helper Functions """
