@@ -295,14 +295,15 @@ class TestManager(ABC):
 
     def ior_staged_cmd(self, spawn_info, transfer_size, io_size_per_rank,
                        dev='ssd', with_staging=True):
-        no_hermes = spawn_info.mod(use_hermes=False)
+        no_hermes = spawn_info.mod(use_hermes=False, env=spawn_info.basic_env)
+        no_daemon = spawn_info.mod(use_hermes=False)
         self.ior_write_cmd(no_hermes, transfer_size, io_size_per_rank, dev)
         self.start_daemon(spawn_info)
         if with_staging:
-            self.staging_cmd(no_hermes, f'{self.devices[dev]}/hi.txt',
+            self.staging_cmd(no_daemon, f'{self.devices[dev]}/hi.txt',
                              SizeConv.to_int(io_size_per_rank) *
                              int(spawn_info.nprocs))
-        self.ior_read_cmd(no_hermes, transfer_size, io_size_per_rank, dev)
+        self.ior_read_cmd(no_daemon, transfer_size, io_size_per_rank, dev)
         self.stop_daemon(spawn_info)
 
     def ior_write_cmd(self, spawn_info, transfer_size,
