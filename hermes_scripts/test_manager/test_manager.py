@@ -282,10 +282,10 @@ class TestManager(ABC):
             return '-a=HDF5'
         return ''
 
-    def staging_cmd(self, spawn_info, path, dev='ssd', size='16g'):
+    def staging_cmd(self, spawn_info, path, size):
         cmd = [
-            f'{self.CMAKE_BINARY_DIR}/bin/stage_in'
-            f'{self.devices[dev]}/hi.txt',
+            f'{self.CMAKE_BINARY_DIR}/bin/stage_in',
+            path,
             '0',
             str(size),
             'kNone'
@@ -300,7 +300,8 @@ class TestManager(ABC):
         self.ior_write_cmd(no_hermes, transfer_size, io_size_per_rank, dev)
         self.start_daemon(spawn_info)
         if with_staging:
-            self.staging_cmd(no_daemon, f'{self.devices[dev]}/hi.txt',
+            self.staging_cmd(no_daemon,
+                             f'{self.devices[dev]}/hi.txt',
                              SizeConv.to_int(io_size_per_rank) *
                              int(spawn_info.nprocs))
         self.ior_read_cmd(no_daemon, transfer_size, io_size_per_rank, dev)
