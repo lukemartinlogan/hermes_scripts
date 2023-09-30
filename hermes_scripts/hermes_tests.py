@@ -9,8 +9,10 @@ import sys
 # Create baseline pipeline
 name = sys.argv[1]
 bench = Pipeline().load(name)
+# will clear all packages from pipeline
+# will not erase env.yaml
 bench.clear()
-bench.build_env()
+# append packages to pipeline
 bench.append('hermes_run', sleep=5)
 bench.append('hermes_api', posix=True)
 bench.append('ior')
@@ -24,5 +26,3 @@ for nprocs in proc_counts:
     stop = time.time()
     print('Time: {} sec', stop - start)
     bench.clean()
-
-
