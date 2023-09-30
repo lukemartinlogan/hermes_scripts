@@ -1,9 +1,15 @@
+"""
+USAGE: ./hermes_tests [pipeline-name]
+"""
+
 from jarvis_cd.basic.pkg import Pipeline
 import time
+import sys
 
 # Create baseline pipeline
-bench = Pipeline.load('hermes_scripts_bench')
-bench.destroy()
+name = sys.argv[1]
+bench = Pipeline().load(name)
+bench.clear()
 bench.build_env()
 bench.append('hermes_run', sleep=5)
 bench.append('hermes_api', posix=True)
@@ -17,5 +23,6 @@ for nprocs in proc_counts:
     bench.run()
     stop = time.time()
     print('Time: {} sec', stop - start)
+    bench.clean()
 
 

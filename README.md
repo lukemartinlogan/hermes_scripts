@@ -6,6 +6,7 @@ for the act of
 
 ## Dependencies
 ```
+spack external find python
 spack install hermes@dev-1.1 ior
 spack load hermes@dev-1.1 ior
 ```
@@ -16,5 +17,7 @@ This evaluation will scale number of processes between 2 and 16.
 It uses an I/O size of 4KB. It generates total of 32MB per process. 
 
 ```
-python3 hermes_scripts/hermes_tests.py
+jarvis pipeline create hermes_bench
+jarvis pipeline env build
+python3 hermes_scripts/hermes_tests.py hermes_bench
 ```
