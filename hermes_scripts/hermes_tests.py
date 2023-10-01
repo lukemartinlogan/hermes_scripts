@@ -2,6 +2,7 @@
 USAGE: ./hermes_tests [pipeline-name]
 """
 
+from jarvis_util import *
 from jarvis_cd.basic.pkg import Pipeline
 import time
 import sys
@@ -13,7 +14,7 @@ bench = Pipeline().load(name)
 # will not erase env.yaml
 bench.clear()
 # append packages to pipeline
-bench.append('hermes_run', sleep=5)
+bench.append('hermes_run', sleep=2)
 bench.append('hermes_api', posix=True)
 bench.append('ior')
 
@@ -24,5 +25,8 @@ for nprocs in proc_counts:
     start = time.time()
     bench.run()
     stop = time.time()
-    print('Time: {} sec', stop - start)
+    print(f'Time: {stop - start} sec')
     bench.clean()
+    print('Cleaned')
+
+print('COMPLETED!!!')
