@@ -14,8 +14,8 @@ bench = Pipeline().load(name)
 # will not erase env.yaml
 bench.clear()
 # append packages to pipeline
-bench.append('orangefs',
-             mount='/home/llogan/ofs_mount')
+# bench.append('orangefs',
+#              mount='/home/llogan/ofs_mount')
 bench.append('hermes_run',
              sleep=4, ram='8g',
              include='/home/llogan/ofs_mount')

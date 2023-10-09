@@ -18,6 +18,6 @@ It uses an I/O size of 4KB. It generates total of 32MB per process.
 
 ```
 jarvis pipeline create hermes_bench
-jarvis pipeline env build
-python3 hermes_scripts/hermes_tests.py hermes_bench
+jarvis pipeline env build +ORANGEFS_PATH
+python3 hermes_scripts/ior_hermes.py hermes_bench
 ```
