@@ -21,6 +21,7 @@ bench.append('hermes_run',
              include='/home/llogan/ofs_mount')
 bench.append('hermes_api', posix=True)
 bench.append('ior', out='/home/llogan/ofs_mount/ior.bin')
+bench.stop()
 
 # Scale the pipeline
 io_sizes = ['4k', '64k', '1m']
